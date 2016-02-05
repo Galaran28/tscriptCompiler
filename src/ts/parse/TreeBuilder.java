@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Provides static methods for building AST nodes.
  */
+//TODO: add booleanliteral builder
 public class TreeBuilder
 {
 
@@ -22,8 +23,8 @@ public class TreeBuilder
    *  @see Binop
    */
   public static Expression buildBinaryOperator(final Location loc,
-    final Binop op,
-    final Expression left, final Expression right)
+      final Binop op,
+      final Expression left, final Expression right)
   {
     Message.log("TreeBuilder: Binop " + op.toString());
 
@@ -37,7 +38,7 @@ public class TreeBuilder
    *  @return tree node for an expression statement.
    */
   public static Statement buildExpressionStatement(final Location loc,
-    final Expression exp)
+      final Expression exp)
   {
     Message.log("TreeBuilder: ExpressionStatement");
     return new ExpressionStatement(loc, exp);
@@ -50,7 +51,7 @@ public class TreeBuilder
    *  @return tree node for an identififier.
    */
   public static Expression buildIdentifier(final Location loc,
-    final String name)
+      final String name)
   {
     Message.log("TreeBuilder: Identifier (" + name + ")");
     return new Identifier(loc, name);
@@ -64,7 +65,7 @@ public class TreeBuilder
    *  @return tree node for a numeric literal.
    */
   public static Expression buildNumericLiteral(final Location loc,
-    final String value)
+      final String value)
   {
     double d = 0.0;
 
@@ -87,7 +88,7 @@ public class TreeBuilder
    *  @return tree node for a print statement.
    */
   public static Statement buildPrintStatement(final Location loc,
-    final Expression exp)
+      final Expression exp)
   {
     Message.log("TreeBuilder: PrintStatement");
     return new PrintStatement(loc, exp);
@@ -100,10 +101,23 @@ public class TreeBuilder
    *  @return tree node for the root of the AST.
    */
   public static Program buildProgram(final Location loc,
-    final List<Statement> list)
+      final List<Statement> list)
   {
     Message.log("TreeBuilder: Program");
     return new Program(loc, list);
+  }
+
+  /** Build a Boolean literal expression.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  value value of the literal as a String.
+   *  @return tree node for a numeric literal.
+   */
+  public static Expression buildBooleanLiteral(final Location loc,
+      final String value)
+  {
+    Message.log("TreeBuilder: BooleanLiteral " + value);
+    return new BooleanLiteral(loc, value);
   }
 
   /** Build a string literal expression.
@@ -113,7 +127,7 @@ public class TreeBuilder
    *  @return tree node for a numeric literal.
    */
   public static Expression buildStringLiteral(final Location loc,
-    final String value)
+      final String value)
   {
     // need to strip off the doublequotes
     String v = value.substring(1, value.length() - 1);
@@ -129,7 +143,7 @@ public class TreeBuilder
    *  @return tree node for a var statement.
    */
   public static Statement buildVarStatement(final Location loc,
-    final String name)
+      final String name)
   {
     Message.log("TreeBuilder: VarStatement (" + name + ")");
     return new VarStatement(loc, name);
@@ -151,7 +165,7 @@ public class TreeBuilder
     }
     return false;
   }
-  
+
   /** Used to detect non-references on left-hand-side of assignment and
    *  also to mark identifier nodes as denoting Lvals (location rather
    *  than value).

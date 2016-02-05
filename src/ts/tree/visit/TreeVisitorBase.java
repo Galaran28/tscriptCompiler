@@ -38,7 +38,7 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     }
     return visited;
   }
-  
+
   /** Visit a BinaryOperator node. Override to provide specific behavior. */
   @Override public T visit(final BinaryOperator binaryOperator)
   {
@@ -84,6 +84,12 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
 
   /** Visit a StringLiteral node. Override to provide specific behavior. */
   @Override public T visit(final StringLiteral stringLiteral)
+  {
+    return null;
+  }
+
+  /** Visit a BooleanLiteral node. Override to provide specific behavior. */
+  @Override public T visit(final BooleanLiteral booleanLiteral)
   {
     return null;
   }

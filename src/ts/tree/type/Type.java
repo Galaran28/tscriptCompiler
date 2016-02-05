@@ -43,6 +43,6 @@ public abstract class Type
     // by default types are implemented as singletons so can use Object.equals
     return this.equals(type);
   }
-    
+
 }
 
