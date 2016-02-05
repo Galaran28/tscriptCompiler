@@ -8,6 +8,9 @@ package ts.tree.type;
  */
 public final class UnknownType extends Type
 {
+  // singleton
+  private static final UnknownType INSTANCE = new UnknownType();
+
   // private constructor
   private UnknownType()
   {
@@ -18,7 +21,7 @@ public final class UnknownType extends Type
    */
   public static UnknownType getInstance()
   {
-    return new UnknownType();
+    return INSTANCE;
   }
 
   /** Always returns true.
