@@ -285,6 +285,16 @@ public final class Analyze extends TreeVisitorBase<Tree>
     return booleanLiteral;
   }
 
+  /** Analyze a null literal. */
+  @Override public Tree visit(final NullLiteral nullLiteral)
+  {
+    // always has Unknown type
+    nullLiteral.setType(UnknownType.getInstance());
+
+    // return the node so that it can be re-assigned by its parent
+    return nullLiteral;
+  }
+
   /** Analyze a var statement. */
   @Override public Tree visit(final VarStatement varStatement)
   {

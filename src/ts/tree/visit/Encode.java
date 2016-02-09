@@ -486,6 +486,16 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     return new Encode.ReturnValue(result, code);
   }
 
+  /** Generate and return code for a null literal. */
+  @Override public Encode.ReturnValue visit(final NullLiteral nullLiteral)
+  {
+    String result = getTemp();
+    String code = indent() + "TSNull " + result + " = " +
+      "TSNull.create();\n";
+
+    return new Encode.ReturnValue(result, code);
+  }
+
   /** Generate and return code for a var statement. */
   @Override public Encode.ReturnValue visit(final VarStatement varStatement)
   {

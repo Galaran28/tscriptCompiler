@@ -124,6 +124,8 @@ primaryExpression
     { $lval = buildStringLiteral(loc($start), $STRING_LITERAL.text); }
   | BOOLEAN_LITERAL
     { $lval = buildBooleanLiteral(loc($start), $BOOLEAN_LITERAL.text); }
+  | NULL_LITERAL
+    { $lval = buildNullLiteral(loc($start), $NULL_LITERAL.text); }
   | LPAREN e=expression RPAREN
     { $lval = $e.lval; }
   ;
@@ -158,6 +160,8 @@ STRING_LITERAL : '"' (Digit | Letter | [+-.])* '"';
 
 BOOLEAN_LITERAL : TRUE | FALSE ;
 
+NULL_LITERAL : NULL ;
+
 LPAREN : [(];
 RPAREN : [)];
 SEMICOLON : [;];
@@ -170,6 +174,7 @@ PRINT : 'console.log';
 VAR : 'var';
 TRUE: 'true';
 FALSE: 'false';
+NULL: 'null';
 
 IDENTIFIER : IdentifierCharacters;
 

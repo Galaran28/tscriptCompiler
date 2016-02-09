@@ -94,6 +94,12 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
+  /** Visit a BooleanLiteral node. Override to provide specific behavior. */
+  @Override public T visit(final NullLiteral nullLiteral)
+  {
+    return null;
+  }
+
   /** Visit a VarStatement node. Override to provide specific behavior. */
   @Override public T visit(final VarStatement varStatement)
   {

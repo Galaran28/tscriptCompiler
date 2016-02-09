@@ -120,6 +120,19 @@ public class TreeBuilder
     return new BooleanLiteral(loc, value);
   }
 
+  /** Build a Null literal expression.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  value value of the literal as a String.
+   *  @return tree node for a numeric literal.
+   */
+  public static Expression buildNullLiteral(final Location loc,
+      final String value)
+  {
+    Message.log("TreeBuilder: NullLiteral " + value);
+    return new NullLiteral(loc, value);
+  }
+
   /** Build a string literal expression.
    *
    *  @param  loc   location in source code (file, line, column).

@@ -24,9 +24,9 @@ public class TscriptParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		NUMERIC_LITERAL=1, STRING_LITERAL=2, BOOLEAN_LITERAL=3, LPAREN=4, RPAREN=5, 
-		SEMICOLON=6, EQUAL=7, PLUS=8, ASTERISK=9, PRINT=10, VAR=11, TRUE=12, FALSE=13, 
-		IDENTIFIER=14, WhiteSpace=15;
+		NUMERIC_LITERAL=1, STRING_LITERAL=2, BOOLEAN_LITERAL=3, NULL_LITERAL=4, 
+		LPAREN=5, RPAREN=6, SEMICOLON=7, EQUAL=8, PLUS=9, ASTERISK=10, PRINT=11, 
+		VAR=12, TRUE=13, FALSE=14, NULL=15, IDENTIFIER=16, WhiteSpace=17;
 	public static final int
 		RULE_program = 0, RULE_statementList = 1, RULE_statement = 2, RULE_varStatement = 3, 
 		RULE_expressionStatement = 4, RULE_printStatement = 5, RULE_expression = 6, 
@@ -39,13 +39,13 @@ public class TscriptParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, null, null, null, null, null, null, null, null, null, "'console.log'", 
-		"'var'", "'true'", "'false'"
+		null, null, null, null, null, null, null, null, null, null, null, "'console.log'", 
+		"'var'", "'true'", "'false'", "'null'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "NUMERIC_LITERAL", "STRING_LITERAL", "BOOLEAN_LITERAL", "LPAREN", 
-		"RPAREN", "SEMICOLON", "EQUAL", "PLUS", "ASTERISK", "PRINT", "VAR", "TRUE", 
-		"FALSE", "IDENTIFIER", "WhiteSpace"
+		null, "NUMERIC_LITERAL", "STRING_LITERAL", "BOOLEAN_LITERAL", "NULL_LITERAL", 
+		"LPAREN", "RPAREN", "SEMICOLON", "EQUAL", "PLUS", "ASTERISK", "PRINT", 
+		"VAR", "TRUE", "FALSE", "NULL", "IDENTIFIER", "WhiteSpace"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -260,6 +260,7 @@ public class TscriptParser extends Parser {
 			case NUMERIC_LITERAL:
 			case STRING_LITERAL:
 			case BOOLEAN_LITERAL:
+			case NULL_LITERAL:
 			case LPAREN:
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 2);
@@ -709,11 +710,13 @@ public class TscriptParser extends Parser {
 		public Token NUMERIC_LITERAL;
 		public Token STRING_LITERAL;
 		public Token BOOLEAN_LITERAL;
+		public Token NULL_LITERAL;
 		public ExpressionContext e;
 		public TerminalNode IDENTIFIER() { return getToken(TscriptParser.IDENTIFIER, 0); }
 		public TerminalNode NUMERIC_LITERAL() { return getToken(TscriptParser.NUMERIC_LITERAL, 0); }
 		public TerminalNode STRING_LITERAL() { return getToken(TscriptParser.STRING_LITERAL, 0); }
 		public TerminalNode BOOLEAN_LITERAL() { return getToken(TscriptParser.BOOLEAN_LITERAL, 0); }
+		public TerminalNode NULL_LITERAL() { return getToken(TscriptParser.NULL_LITERAL, 0); }
 		public TerminalNode LPAREN() { return getToken(TscriptParser.LPAREN, 0); }
 		public TerminalNode RPAREN() { return getToken(TscriptParser.RPAREN, 0); }
 		public ExpressionContext expression() {
@@ -729,7 +732,7 @@ public class TscriptParser extends Parser {
 		PrimaryExpressionContext _localctx = new PrimaryExpressionContext(_ctx, getState());
 		enterRule(_localctx, 22, RULE_primaryExpression);
 		try {
-			setState(124);
+			setState(126);
 			switch (_input.LA(1)) {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 1);
@@ -763,14 +766,22 @@ public class TscriptParser extends Parser {
 				 ((PrimaryExpressionContext)_localctx).lval =  buildBooleanLiteral(loc(_localctx.start), (((PrimaryExpressionContext)_localctx).BOOLEAN_LITERAL!=null?((PrimaryExpressionContext)_localctx).BOOLEAN_LITERAL.getText():null)); 
 				}
 				break;
-			case LPAREN:
+			case NULL_LITERAL:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(119);
-				match(LPAREN);
-				setState(120);
-				((PrimaryExpressionContext)_localctx).e = expression();
+				((PrimaryExpressionContext)_localctx).NULL_LITERAL = match(NULL_LITERAL);
+				 ((PrimaryExpressionContext)_localctx).lval =  buildNullLiteral(loc(_localctx.start), (((PrimaryExpressionContext)_localctx).NULL_LITERAL!=null?((PrimaryExpressionContext)_localctx).NULL_LITERAL.getText():null)); 
+				}
+				break;
+			case LPAREN:
+				enterOuterAlt(_localctx, 6);
+				{
 				setState(121);
+				match(LPAREN);
+				setState(122);
+				((PrimaryExpressionContext)_localctx).e = expression();
+				setState(123);
 				match(RPAREN);
 				 ((PrimaryExpressionContext)_localctx).lval =  ((PrimaryExpressionContext)_localctx).e.lval; 
 				}
@@ -824,7 +835,7 @@ public class TscriptParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\21\u0081\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\23\u0083\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3"+
 		"&\n\3\f\3\16\3)\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\64\n\4\3"+
@@ -832,28 +843,30 @@ public class TscriptParser extends Parser {
 		"\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tQ\n\t\3\n\3\n\3\n\3\13\3\13\3"+
 		"\13\3\13\3\13\3\13\3\13\3\13\3\13\7\13_\n\13\f\13\16\13b\13\13\3\f\3\f"+
 		"\3\f\3\f\3\f\3\f\3\f\3\f\3\f\7\fm\n\f\f\f\16\fp\13\f\3\r\3\r\3\r\3\r\3"+
-		"\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r\177\n\r\3\r\2\5\4\24\26\16\2\4"+
-		"\6\b\n\f\16\20\22\24\26\30\2\2~\2\32\3\2\2\2\4\36\3\2\2\2\6\63\3\2\2\2"+
-		"\b\65\3\2\2\2\n:\3\2\2\2\f>\3\2\2\2\16E\3\2\2\2\20P\3\2\2\2\22R\3\2\2"+
-		"\2\24U\3\2\2\2\26c\3\2\2\2\30~\3\2\2\2\32\33\5\4\3\2\33\34\7\2\2\3\34"+
-		"\35\b\2\1\2\35\3\3\2\2\2\36\37\b\3\1\2\37 \b\3\1\2 \'\3\2\2\2!\"\f\3\2"+
-		"\2\"#\5\6\4\2#$\b\3\1\2$&\3\2\2\2%!\3\2\2\2&)\3\2\2\2\'%\3\2\2\2\'(\3"+
-		"\2\2\2(\5\3\2\2\2)\'\3\2\2\2*+\5\b\5\2+,\b\4\1\2,\64\3\2\2\2-.\5\n\6\2"+
-		"./\b\4\1\2/\64\3\2\2\2\60\61\5\f\7\2\61\62\b\4\1\2\62\64\3\2\2\2\63*\3"+
-		"\2\2\2\63-\3\2\2\2\63\60\3\2\2\2\64\7\3\2\2\2\65\66\7\r\2\2\66\67\7\20"+
-		"\2\2\678\7\b\2\289\b\5\1\29\t\3\2\2\2:;\5\16\b\2;<\7\b\2\2<=\b\6\1\2="+
-		"\13\3\2\2\2>?\7\f\2\2?@\7\6\2\2@A\5\16\b\2AB\7\7\2\2BC\7\b\2\2CD\b\7\1"+
-		"\2D\r\3\2\2\2EF\5\20\t\2FG\b\b\1\2G\17\3\2\2\2HI\5\24\13\2IJ\b\t\1\2J"+
-		"Q\3\2\2\2KL\5\22\n\2LM\7\t\2\2MN\5\20\t\2NO\b\t\1\2OQ\3\2\2\2PH\3\2\2"+
-		"\2PK\3\2\2\2Q\21\3\2\2\2RS\5\30\r\2ST\b\n\1\2T\23\3\2\2\2UV\b\13\1\2V"+
-		"W\5\26\f\2WX\b\13\1\2X`\3\2\2\2YZ\f\3\2\2Z[\7\n\2\2[\\\5\26\f\2\\]\b\13"+
-		"\1\2]_\3\2\2\2^Y\3\2\2\2_b\3\2\2\2`^\3\2\2\2`a\3\2\2\2a\25\3\2\2\2b`\3"+
-		"\2\2\2cd\b\f\1\2de\5\30\r\2ef\b\f\1\2fn\3\2\2\2gh\f\3\2\2hi\7\13\2\2i"+
-		"j\5\30\r\2jk\b\f\1\2km\3\2\2\2lg\3\2\2\2mp\3\2\2\2nl\3\2\2\2no\3\2\2\2"+
-		"o\27\3\2\2\2pn\3\2\2\2qr\7\20\2\2r\177\b\r\1\2st\7\3\2\2t\177\b\r\1\2"+
-		"uv\7\4\2\2v\177\b\r\1\2wx\7\5\2\2x\177\b\r\1\2yz\7\6\2\2z{\5\16\b\2{|"+
-		"\7\7\2\2|}\b\r\1\2}\177\3\2\2\2~q\3\2\2\2~s\3\2\2\2~u\3\2\2\2~w\3\2\2"+
-		"\2~y\3\2\2\2\177\31\3\2\2\2\b\'\63P`n~";
+		"\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r\u0081\n\r\3\r\2\5\4\24"+
+		"\26\16\2\4\6\b\n\f\16\20\22\24\26\30\2\2\u0081\2\32\3\2\2\2\4\36\3\2\2"+
+		"\2\6\63\3\2\2\2\b\65\3\2\2\2\n:\3\2\2\2\f>\3\2\2\2\16E\3\2\2\2\20P\3\2"+
+		"\2\2\22R\3\2\2\2\24U\3\2\2\2\26c\3\2\2\2\30\u0080\3\2\2\2\32\33\5\4\3"+
+		"\2\33\34\7\2\2\3\34\35\b\2\1\2\35\3\3\2\2\2\36\37\b\3\1\2\37 \b\3\1\2"+
+		" \'\3\2\2\2!\"\f\3\2\2\"#\5\6\4\2#$\b\3\1\2$&\3\2\2\2%!\3\2\2\2&)\3\2"+
+		"\2\2\'%\3\2\2\2\'(\3\2\2\2(\5\3\2\2\2)\'\3\2\2\2*+\5\b\5\2+,\b\4\1\2,"+
+		"\64\3\2\2\2-.\5\n\6\2./\b\4\1\2/\64\3\2\2\2\60\61\5\f\7\2\61\62\b\4\1"+
+		"\2\62\64\3\2\2\2\63*\3\2\2\2\63-\3\2\2\2\63\60\3\2\2\2\64\7\3\2\2\2\65"+
+		"\66\7\16\2\2\66\67\7\22\2\2\678\7\t\2\289\b\5\1\29\t\3\2\2\2:;\5\16\b"+
+		"\2;<\7\t\2\2<=\b\6\1\2=\13\3\2\2\2>?\7\r\2\2?@\7\7\2\2@A\5\16\b\2AB\7"+
+		"\b\2\2BC\7\t\2\2CD\b\7\1\2D\r\3\2\2\2EF\5\20\t\2FG\b\b\1\2G\17\3\2\2\2"+
+		"HI\5\24\13\2IJ\b\t\1\2JQ\3\2\2\2KL\5\22\n\2LM\7\n\2\2MN\5\20\t\2NO\b\t"+
+		"\1\2OQ\3\2\2\2PH\3\2\2\2PK\3\2\2\2Q\21\3\2\2\2RS\5\30\r\2ST\b\n\1\2T\23"+
+		"\3\2\2\2UV\b\13\1\2VW\5\26\f\2WX\b\13\1\2X`\3\2\2\2YZ\f\3\2\2Z[\7\13\2"+
+		"\2[\\\5\26\f\2\\]\b\13\1\2]_\3\2\2\2^Y\3\2\2\2_b\3\2\2\2`^\3\2\2\2`a\3"+
+		"\2\2\2a\25\3\2\2\2b`\3\2\2\2cd\b\f\1\2de\5\30\r\2ef\b\f\1\2fn\3\2\2\2"+
+		"gh\f\3\2\2hi\7\f\2\2ij\5\30\r\2jk\b\f\1\2km\3\2\2\2lg\3\2\2\2mp\3\2\2"+
+		"\2nl\3\2\2\2no\3\2\2\2o\27\3\2\2\2pn\3\2\2\2qr\7\22\2\2r\u0081\b\r\1\2"+
+		"st\7\3\2\2t\u0081\b\r\1\2uv\7\4\2\2v\u0081\b\r\1\2wx\7\5\2\2x\u0081\b"+
+		"\r\1\2yz\7\6\2\2z\u0081\b\r\1\2{|\7\7\2\2|}\5\16\b\2}~\7\b\2\2~\177\b"+
+		"\r\1\2\177\u0081\3\2\2\2\u0080q\3\2\2\2\u0080s\3\2\2\2\u0080u\3\2\2\2"+
+		"\u0080w\3\2\2\2\u0080y\3\2\2\2\u0080{\3\2\2\2\u0081\31\3\2\2\2\b\'\63"+
+		"P`n\u0080";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
