@@ -11,7 +11,7 @@ import ts.tree.type.UnknownType;
  */
 public final class BooleanLiteral extends Expression
 {
-  private String value;
+  private boolean value;
 
   /** Construct a Boolean literal tree node.
    *
@@ -22,14 +22,18 @@ public final class BooleanLiteral extends Expression
   {
     super(loc);
     this.setType(UnknownType.getInstance());
-    this.value = value;
+    if (value.equals("false")) {
+      this.value = false;
+    } else {
+      this.value = true;
+    }
   }
 
   /** Get the value of the literal.
    *
    *  @return the value of the literal.
    */
-  public String getValue()
+  public boolean getValue()
   {
     return value;
   }

@@ -202,7 +202,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     }
     return ret;
   }
-  
+
   /** Generate and return code for a binary operator. */
   @Override public Encode.ReturnValue visit(final BinaryOperator binaryOperator)
   {
@@ -472,6 +472,16 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     String result = getTemp();
     String code = indent() + "String " + result + " = \"" +
       stringLiteral.getValue() + "\";\n";
+
+    return new Encode.ReturnValue(result, code);
+  }
+
+  /** Generate and return code for a boolean literal. */
+  @Override public Encode.ReturnValue visit(final BooleanLiteral booleanLiteral)
+  {
+    String result = getTemp();
+    String code = indent() + "TSBoolean " + result + " = " +
+      "TSBoolean.create(" + booleanLiteral.getValue() + ");\n";
 
     return new Encode.ReturnValue(result, code);
   }

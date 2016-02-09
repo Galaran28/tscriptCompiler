@@ -28,6 +28,12 @@ public final class TSUndefined extends TSPrimitive
     return TSString.create("undefined");
   }
 
+  /** Convert to Boolean */
+  public TSBoolean toBoolean()
+  {
+    return TSBoolean.create(false);
+  }
+
   /** Always returns true. */
   public boolean isUndefined()
   {

@@ -57,6 +57,16 @@ public final class TSString extends TSPrimitive
     return new TSString(value);
   }
 
+  /** Convert String to Boolean */
+  public TSBoolean toBoolean()
+  {
+    if (value.length() == 0) {
+      return TSBoolean.create(false);
+    } else {
+      return TSBoolean.create(true);
+    }
+  }
+
   /** Convert String to Number. */
   public TSNumber toNumber()
   {

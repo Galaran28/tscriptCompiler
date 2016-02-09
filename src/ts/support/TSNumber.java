@@ -56,6 +56,16 @@ public final class TSNumber extends TSPrimitive
     return this;
   }
 
+  /** Convert to a Boolean */
+  public TSBoolean toBoolean()
+  {
+    if (value == 0 || Double.isNaN(value)) {
+      return TSBoolean.create(false);
+    } else {
+      return TSBoolean.create(true);
+    }
+  }
+
   /** Convert Number to String
    * (<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.8.1">ELS
    * 9.8.1</a>)
@@ -204,7 +214,7 @@ public final class TSNumber extends TSPrimitive
         result = new String(out, 0, next) + tmp2;
       }
 
-      else 
+      else
       {
         out[next] = buf[0];
         next += 1;

@@ -24,6 +24,8 @@ public abstract class TSValue
 
   abstract public TSNumber toNumber();
 
+  abstract public TSBoolean toBoolean();
+
   /** Convert to String. Override for all primitive types.
    *  It can't be called toString because of Object.toString.
    *
@@ -53,7 +55,7 @@ public abstract class TSValue
     TSNumber rightValue = right.toNumber();
     return TSNumber.create(leftValue.getInternal() * rightValue.getInternal());
   }
-  
+
   /** Perform an addition. "this" is the left operand and the right
    *  operand is given by the parameter. Both operands are converted
    *  to Number before the addition.
@@ -84,7 +86,7 @@ public abstract class TSValue
     return TSNumber.create(leftValue.toNumber().getInternal() +
       rightValue.toNumber().getInternal());
   }
-  
+
   //
   // test for undefined
   //
