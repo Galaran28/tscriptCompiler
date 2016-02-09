@@ -78,7 +78,7 @@ public final class Analyze extends TreeVisitorBase<Tree>
     }
     return null;
   }
-  
+
   /** Analyze a binary operator. */
   @Override public Tree visit(final BinaryOperator binaryOperator)
   {
@@ -273,6 +273,16 @@ public final class Analyze extends TreeVisitorBase<Tree>
 
     // return the node so that it can be re-assigned by its parent
     return stringLiteral;
+  }
+
+  /** Analyze a boolean literal. */
+  @Override public Tree visit(final BooleanLiteral booleanLiteral)
+  {
+    // always has Unknown type
+    booleanLiteral.setType(UnknownType.getInstance());
+
+    // return the node so that it can be re-assigned by its parent
+    return booleanLiteral;
   }
 
   /** Analyze a var statement. */
