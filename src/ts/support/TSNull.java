@@ -7,19 +7,10 @@ package ts.support;
 public final class TSNull extends TSPrimitive
 {
   /** pre-built value */
-  public static final TSNull nullVal = new TSNull();
+  public static final TSNull value = new TSNull();
 
   // use the "create" method instead
   private TSNull() {}
-
-  /** Create a Null.
-   *
-   *  @return the new TSNull
-   */
-  public static TSNull create()
-  {
-    return nullVal;
-  }
 
   /** Get the value.
    *

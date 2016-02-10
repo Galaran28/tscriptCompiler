@@ -2,9 +2,11 @@
 package ts.tree.visit;
 
 import ts.Message;
+import ts.Location;
 import ts.tree.*;
 import ts.tree.type.*;
 import static ts.tree.Binop.*;
+import ts.parse.TreeBuilder;
 
 import java.util.Deque;
 import java.util.Map;
@@ -66,6 +68,13 @@ public final class Analyze extends TreeVisitorBase<Tree>
     }
     this.pass = pass;
     symbolTable = new HashMap<String,Deque<VarStatement>>();
+
+    // insert prebuild undefined node into symbol table
+    Deque<VarStatement> stack = new LinkedList<VarStatement>();
+    VarStatement undefNode = (VarStatement) TreeBuilder.buildVarStatement(new Location("",0,0), "undefined");
+    undefNode.setTempName("undefined");
+    stack.add(undefNode);
+    symbolTable.put("undefined", stack);
   }
 
   /** Visit a list of ASTs and dump them in order.

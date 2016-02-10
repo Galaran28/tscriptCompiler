@@ -150,6 +150,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     String ret = "";
     ret += indent() + "{\n";
     increaseIndentation();
+    ret += indent() + "TSValue undefined = TSUndefined.value;\n";
     return ret;
   }
 
@@ -490,8 +491,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
   @Override public Encode.ReturnValue visit(final NullLiteral nullLiteral)
   {
     String result = getTemp();
-    String code = indent() + "TSNull " + result + " = " +
-      "TSNull.create();\n";
+    String code = indent() + "TSValue " + result + " = " + "TSNull.value;\n";
 
     return new Encode.ReturnValue(result, code);
   }
