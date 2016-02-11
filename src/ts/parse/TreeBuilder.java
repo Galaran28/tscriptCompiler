@@ -69,12 +69,15 @@ public class TreeBuilder
   {
     double d = 0.0;
 
-    try
-    {
-      d = Double.parseDouble(value);
-    }
-    catch(NumberFormatException nfe)
-    {
+    try {
+      // handle hex inputs
+      if (value.matches("0[xX][0-9a-fA-F]+")) {
+        String hex = value.substring(2);
+        d = Integer.parseInt(hex, 16);
+      } else {
+        d = Double.parseDouble(value);
+      }
+    } catch(NumberFormatException e) {
       Message.bug(loc, "numeric literal not parsable");
     }
     Message.log("TreeBuilder: NumericLiteral " + d);

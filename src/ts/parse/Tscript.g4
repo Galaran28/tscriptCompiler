@@ -133,6 +133,20 @@ primaryExpression
 // fragments to support the lexer rules
 
 fragment Digit : [0-9];
+fragment NonZeroDigit : [1-9];
+fragment Digits : Digit Digit*;
+fragment DecimalIntegerLiteral : ('0' | (NonZeroDigit Digits?));
+fragment DecimalLiteral : (DecimalIntegerLiteral '.' Digits? ExponentPart?) |
+                          ('.' Digits ExponentPart?) |
+                          (DecimalIntegerLiteral ExponentPart?);
+
+fragment HexDigit : [0-9a-fA-F];
+fragment HexLiteral : ('0x' HexDigit* | '0X' HexDigit*);
+
+fragment ExponentIndicator : ('e' | 'E');
+fragment SignedInteger : (Digits | '+' Digits | '-' Digits);
+fragment ExponentPart : ExponentIndicator SignedInteger;
+
 
 fragment IdentifierCharacters : [a-zA-Z_$] [a-zA-Z0-9_$]*;
 
@@ -149,9 +163,8 @@ fragment Letter : [a-zA-Z];
 // lexer rules
 //   keywords must appear before IDENTIFIER
 
-// THIS WILL NEED TO BE IMPROVED
 // cannot have a leading 0 unless the literal is just 0
-NUMERIC_LITERAL : ([1-9] Digit*) | [0];
+NUMERIC_LITERAL : ( DecimalLiteral | HexLiteral );
 
 // THIS WILL NEED TO BE IMPROVED
 // just a hack to allow numeric literals to be represented in strings
