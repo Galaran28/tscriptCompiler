@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Provides static methods for building AST nodes.
  */
-//TODO: add booleanliteral builder
 public class TreeBuilder
 {
 

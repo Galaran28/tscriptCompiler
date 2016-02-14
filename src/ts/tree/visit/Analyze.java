@@ -119,6 +119,10 @@ public final class Analyze extends TreeVisitorBase<Tree>
           binaryOperator.setType(UnknownType.getInstance());
         }
         break;
+      case SUB:
+        // always produces a number
+        binaryOperator.setType(NumberType.getInstance());
+        break;
       case ASSIGN:
         // type of the result is the type of the right-hand side
         binaryOperator.setType(rightType);

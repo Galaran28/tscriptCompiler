@@ -281,6 +281,26 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         // otherwise need to do unoptimized code generation
         break;
 
+      case SUB:
+
+        // if the type of a subtree is not known now to be Number, then
+        // need to make sure it will be converted to Number if necessary
+        if (!left.getType().isNumberType())
+        {
+          leftResult = "TSValue.make(" + leftResult +
+            ").toNumber().getInternal()";
+        }
+        if (!right.getType().isNumberType())
+        {
+          rightResult = "TSValue.make(" + rightResult +
+            ").toNumber().getInternal()";
+        }
+
+        // generage a Java subtraction
+        code += indent() + "double " + result + " = " + leftResult +
+          " - " + rightResult + ";\n";
+        return new Encode.ReturnValue(result, code);
+
       case ASSIGN:
 
         // Need to handle assignment of Number or String to a variable
@@ -351,6 +371,8 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     switch (op) {
       case ADD:
         return "add";
+      case SUB:
+        return "sub";
       case MULTIPLY:
         return "multiply";
       default:
