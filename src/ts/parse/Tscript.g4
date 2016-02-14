@@ -158,7 +158,12 @@ fragment EndOfLineComment : '//' ( ~[\n\r] )* (LineTerminator | EOF);
 
 fragment LineTerminator : '\r' '\n' | '\r' | '\n';
 
-fragment Letter : [a-zA-Z];
+fragment EscapeCharacter : ('\'' | '"' | '\\');
+fragment SourceCharacters : [ -~ ] ; // all ascii printable characters
+fragment SingleStringCharacter : ~['\\] | '\\' SourceCharacters;
+fragment DoubleStringCharacter : ~["\\] | '\\' SourceCharacters;
+fragment SingleStringCharacters : SingleStringCharacter SingleStringCharacter*;
+fragment DoubleStringCharacters : DoubleStringCharacter DoubleStringCharacter*;
 
 // lexer rules
 //   keywords must appear before IDENTIFIER
@@ -166,10 +171,8 @@ fragment Letter : [a-zA-Z];
 // cannot have a leading 0 unless the literal is just 0
 NUMERIC_LITERAL : ( DecimalLiteral | HexLiteral );
 
-// THIS WILL NEED TO BE IMPROVED
-// just a hack to allow numeric literals to be represented in strings
-// as well as simple strings
-STRING_LITERAL : '"' (Digit | Letter | [+-.])* '"';
+STRING_LITERAL : ('"' DoubleStringCharacters? '"') |
+                 ('\'' SingleStringCharacters? '\'') ;
 
 BOOLEAN_LITERAL : TRUE | FALSE ;
 
