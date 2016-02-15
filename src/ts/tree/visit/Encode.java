@@ -204,6 +204,75 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     return ret;
   }
 
+  /** Generate and return code for a unary operator. */
+  @Override public Encode.ReturnValue visit(final UnaryOperator unaryOperator)
+  {
+    // generate code to evaluate the subtree
+    Expression exp = unaryOperator.getExp();
+    Encode.ReturnValue returnValue = visitNode(exp);
+    String code = returnValue.code;
+    String expResult = returnValue.result;
+
+    //
+    // now generate code to do the unary operator itself
+    //
+
+    // name of Java variable to receive the result value
+    String result = getTemp();
+
+    // try to do optimized code generation first
+    final Unop op = unaryOperator.getOp();
+    final Type type = unaryOperator.getType();
+    final String opString = unaryOperator.getOpString();
+    switch (op) {
+
+      case SUB:
+
+        // if the type of a subtree is not known now to be Number, then
+        // need to make sure it will be converted to Number if necessary
+        if (!exp.getType().isNumberType())
+        {
+          expResult = "TSValue.make(" + expResult +
+            ").toNumber().getInternal()";
+        }
+
+        // generage a Java subtraction
+        code += indent() + "double " + result + " = -" + expResult + ";\n";
+        return new Encode.ReturnValue(result, code);
+
+      default:
+        Message.bug("unexpected operator: " + opString);
+    }
+
+    //
+    // if control reaches here then do unoptimized code generation
+    //
+
+    // one of the subtrees might be a Java value at run-time so
+    // need to generate code that will convert it to a TSValue if necessary
+    String methodName = getMethodNameForUnaryOperator(unaryOperator);
+    code += indent() + "TSValue " + result + " = -TSValue.make(" + expResult +
+      ")." + methodName + "));\n";
+
+    return new Encode.ReturnValue(result, code);
+  }
+
+  // support routine for handling unary operators
+  private static String getMethodNameForUnaryOperator(
+    final UnaryOperator opNode)
+  {
+    final Unop op = opNode.getOp();
+
+    switch (op) {
+      case SUB:
+        return "sub";
+      default:
+        Message.bug("unexpected operator: " + opNode.getOpString());
+    }
+    // cannot reach
+    return null;
+  }
+
   /** Generate and return code for a binary operator. */
   @Override public Encode.ReturnValue visit(final BinaryOperator binaryOperator)
   {
@@ -343,6 +412,25 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         // now generate a Java multiply
         code += indent() + "double " + result + " = " + leftResult +
           " * " + rightResult + ";\n";
+        return new Encode.ReturnValue(result, code);
+      case DIVIDE:
+
+        // if the type of a subtree is not known now to be Number, then
+        // need to make sure it will be converted to Number if necessary
+        if (!left.getType().isNumberType())
+        {
+          leftResult = "TSValue.make(" + leftResult +
+            ").toNumber().getInternal()";
+        }
+        if (!right.getType().isNumberType())
+        {
+          rightResult = "TSValue.make(" + rightResult +
+            ").toNumber().getInternal()";
+        }
+
+        // now generate a Java divide
+        code += indent() + "double " + result + " = " + leftResult +
+          " / " + rightResult + ";\n";
         return new Encode.ReturnValue(result, code);
 
       default:

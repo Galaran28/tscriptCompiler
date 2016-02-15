@@ -159,12 +159,40 @@ public final class Analyze extends TreeVisitorBase<Tree>
         // always produces a number
         binaryOperator.setType(NumberType.getInstance());
         break;
+      case DIVIDE:
+        // always produces a number
+        binaryOperator.setType(NumberType.getInstance());
+        break;
       default:
         Message.bug("unexpected binary operator");
     }
 
     // return this node so it can be re-assigned by its parent
     return binaryOperator;
+  }
+
+  /** Analyze a unary operator. */
+  @Override public Tree visit(final UnaryOperator unaryOperator)
+  {
+    // parse expression subtree
+    unaryOperator.setExp((Expression)visitNode(unaryOperator.getExp()));
+
+    // now do type analysis
+    Unop op = unaryOperator.getOp();
+    Type expType = unaryOperator.getExp().getType();
+
+    switch (op)
+    {
+      case SUB:
+        // always produces a number
+        unaryOperator.setType(NumberType.getInstance());
+        break;
+      default:
+        Message.bug("unexpected binary operator");
+    }
+
+    // return this node so it can be re-assigned by its parent
+    return unaryOperator;
   }
 
   /** Analyze an expression statement. */

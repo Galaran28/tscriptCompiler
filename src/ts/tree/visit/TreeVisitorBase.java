@@ -47,6 +47,13 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
+  /** Visit a BinaryOperator node. Override to provide specific behavior. */
+  @Override public T visit(final UnaryOperator unaryOperator)
+  {
+    visitNode(unaryOperator.getExp());
+    return null;
+  }
+
   /** Visit an ExpressionStatement node. Override to provide specific
    *  behavior.
    */

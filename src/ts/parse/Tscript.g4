@@ -110,11 +110,22 @@ additiveExpression
 
 multiplicativeExpression
   returns [ Expression lval ]
-  : p=primaryExpression
+  : p=unaryExpression
     { $lval = $p.lval; }
-  | l=multiplicativeExpression ASTERISK r=primaryExpression
+  | l=multiplicativeExpression ASTERISK r=unaryExpression
     { $lval = buildBinaryOperator(loc($start), Binop.MULTIPLY,
         $l.lval, $r.lval); }
+  | l=multiplicativeExpression RSLASH r=unaryExpression
+    { $lval = buildBinaryOperator(loc($start), Binop.DIVIDE,
+        $l.lval, $r.lval); }
+  ;
+
+unaryExpression
+  returns [ Expression lval ]
+  : p=primaryExpression
+    { $lval = $p.lval; }
+  | MINUS e=unaryExpression
+    { $lval = buildUnaryOperator(loc($start), Unop.SUB, $e.lval); }
   ;
 
 primaryExpression
@@ -188,6 +199,7 @@ EQUAL : [=];
 PLUS : [+];
 MINUS : [-];
 ASTERISK : [*];
+RSLASH : [/];
 
 // keywords start here
 PRINT : 'console.log';

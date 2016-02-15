@@ -30,6 +30,23 @@ public class TreeBuilder
     return new BinaryOperator(loc, op, left, right);
   }
 
+  /** Build a unary operator.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  op    the binary operator.
+   *  @param  expression  the expression subtree.
+   *  @return tree node for a binary operator.
+   *  @see Unop
+   */
+  public static Expression buildUnaryOperator(final Location loc,
+      final Unop op,
+      final Expression expression)
+  {
+    Message.log("TreeBuilder: Unop " + op.toString());
+
+    return new UnaryOperator(loc, op, expression);
+  }
+
   /** Build an expression statement.
    *
    *  @param  loc  location in source code (file, line, column).
