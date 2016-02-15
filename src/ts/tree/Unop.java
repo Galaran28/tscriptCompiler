@@ -5,5 +5,5 @@ package ts.tree;
  * enum for unary operator names
  *
  */
-public enum Unop { SUB }
+public enum Unop { SUB, LNOT }
 

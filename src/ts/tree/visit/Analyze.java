@@ -171,6 +171,10 @@ public final class Analyze extends TreeVisitorBase<Tree>
         //always produces boolean but it is not optimized
         binaryOperator.setType(UnknownType.getInstance());
         break;
+      case EQUALS:
+        //always produces boolean but it is not optimized
+        binaryOperator.setType(UnknownType.getInstance());
+        break;
       default:
         Message.bug("unexpected binary operator");
     }
@@ -194,6 +198,10 @@ public final class Analyze extends TreeVisitorBase<Tree>
       case SUB:
         // always produces a number
         unaryOperator.setType(NumberType.getInstance());
+        break;
+      case LNOT:
+        // always produces boolean but it is not optimized
+        unaryOperator.setType(UnknownType.getInstance());
         break;
       default:
         Message.bug("unexpected binary operator");

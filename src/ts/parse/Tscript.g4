@@ -82,9 +82,9 @@ expression
 
 assignmentExpression
   returns [ Expression lval ]
-  : r=relationalExpression
+  : r=equalityExpression
     { $lval = $r.lval; }
-  | l=leftHandSideExpression EQUAL r=relationalExpression
+  | l=leftHandSideExpression EQUAL r=equalityExpression
     { checkAssignmentDestination(loc($start), $l.lval);
       $lval = buildBinaryOperator(loc($start), Binop.ASSIGN,
         $l.lval, $r.lval); }
@@ -94,6 +94,15 @@ leftHandSideExpression
   returns [ Expression lval ]
   : p=primaryExpression
     { $lval = $p.lval; }
+  ;
+
+equalityExpression
+  returns [ Expression lval ]
+  : a=relationalExpression
+    {$lval = $a.lval; }
+  | l=equalityExpression EQUAL EQUAL r=relationalExpression
+    {$lval = buildBinaryOperator(loc($start), Binop.EQUALS,
+        $l.lval, $r.lval); }
   ;
 
 relationalExpression
@@ -138,6 +147,8 @@ unaryExpression
     { $lval = $p.lval; }
   | MINUS e=unaryExpression
     { $lval = buildUnaryOperator(loc($start), Unop.SUB, $e.lval); }
+  | EXCLAMATIONPOINT e=unaryExpression
+    { $lval = buildUnaryOperator(loc($start), Unop.LNOT, $e.lval); }
   ;
 
 primaryExpression
@@ -208,6 +219,7 @@ LPAREN : [(];
 RPAREN : [)];
 LCARET : [<];
 RCARET : [>];
+EXCLAMATIONPOINT : [!];
 SEMICOLON : [;];
 EQUAL : [=];
 PLUS : [+];

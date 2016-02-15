@@ -74,6 +74,29 @@ public abstract class TSValue
     }
   }
 
+  /** Perform a logical not. "this" is the left operand there is not right op
+   *
+   * @return the result of the negation
+   */
+  public final TSBoolean lnot()
+  {
+    if (this.toBoolean().getInternal()) {
+      return TSBoolean.create(false);
+    }
+    return TSBoolean.create(true);
+  }
+
+  /** Test equality. "this" is the left operand and the right
+   * operand is given by the parameter
+   *
+   * @param right value to be compared
+   * @return the result of the negation
+   */
+  public final TSBoolean equality(final TSValue right)
+  {
+    return TSBoolean.create(equals(right, this));
+  }
+
   /** Perform a multiply. "this" is the left operand and the right
    *  operand is given by the parameter. Both operands are converted
    *  to Number before the multiply.
@@ -201,6 +224,65 @@ public abstract class TSValue
         return TSBoolean.create(false);
       }
     }
+  }
+
+  private static boolean equals(TSValue x, TSValue y) {
+    if (x.getClass().equals(y.getClass())) {
+      if (x instanceof TSUndefined) { return true; }
+      if (x instanceof TSNull) { return true; }
+
+      if (x instanceof TSNumber) {
+        double xnum = x.toNumber().getInternal();
+        double ynum = y.toNumber().getInternal();
+
+        if (Double.isNaN(xnum) || Double.isNaN(ynum)) {
+          return false;
+        }
+
+        if (xnum == ynum) {
+          return true;
+        }
+
+        return false;
+      }
+
+      if (x instanceof TSString) {
+        String xstring = x.toString();
+        String ystring = y.toString();
+        if (xstring.compareTo(ystring) == 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      // TSBoolean is a singleton so we can use Object.equals
+      // if they are the same object the result will be the same
+      // as if when they are TSBoolean
+      if (x.equals(y)) { return true; }
+      else { return false; }
+    }
+
+    if (x instanceof TSNull && y instanceof TSUndefined) {return true; }
+    if (y instanceof TSNull && x instanceof TSUndefined) {return true; }
+
+    if (x instanceof TSNumber && y instanceof TSString) {
+      return equals(x, y.toNumber());
+    }
+    if (x instanceof TSString && y instanceof TSNumber) {
+      return equals(x.toNumber(), y);
+    }
+
+    if (x instanceof TSBoolean) {
+      return equals(x.toNumber(), y);
+    }
+    if (y instanceof TSBoolean) {
+      return equals(x, y.toNumber());
+    }
+
+    // TODO: handle objects
+
+    return false;
   }
 }
 

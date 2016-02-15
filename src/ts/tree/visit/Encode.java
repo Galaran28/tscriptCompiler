@@ -227,7 +227,6 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     switch (op) {
 
       case SUB:
-
         // if the type of a subtree is not known now to be Number, then
         // need to make sure it will be converted to Number if necessary
         if (!exp.getType().isNumberType())
@@ -237,8 +236,11 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         }
 
         // generage a Java subtraction
-        code += indent() + "double " + result + " = -" + expResult + ";\n";
+        code += indent() + "double " + result + " = -(" + expResult + ");\n";
         return new Encode.ReturnValue(result, code);
+
+      case LNOT:
+        break;
 
       default:
         Message.bug("unexpected operator: " + opString);
@@ -251,8 +253,8 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     // one of the subtrees might be a Java value at run-time so
     // need to generate code that will convert it to a TSValue if necessary
     String methodName = getMethodNameForUnaryOperator(unaryOperator);
-    code += indent() + "TSValue " + result + " = -TSValue.make(" + expResult +
-      ")." + methodName + "));\n";
+    code += indent() + "TSValue " + result + " = TSValue.make(" + expResult +
+      ")." + methodName + "();\n";
 
     return new Encode.ReturnValue(result, code);
   }
@@ -265,7 +267,9 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
 
     switch (op) {
       case SUB:
-        return "sub";
+        return "unarysub";
+      case LNOT:
+        return "lnot";
       default:
         Message.bug("unexpected operator: " + opNode.getOpString());
     }
@@ -436,6 +440,8 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         break;
       case GREATERTHAN:
         break;
+      case EQUALS:
+        break;
 
       default:
         Message.bug("unexpected operator: " + opString);
@@ -473,6 +479,8 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         return "greaterthan";
       case LESSTHAN:
         return "lessthan";
+      case EQUALS:
+        return "equality";
       default:
         Message.bug("unexpected operator: " + opNode.getOpString());
     }
