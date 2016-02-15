@@ -71,7 +71,19 @@ public final class Dump extends TreeVisitorBase<Object>
     }
     return null;
   }
-  
+
+  /** Dump a unary operator. */
+  @Override public Object visit(final UnaryOperator unaryOperator)
+  {
+    indent();
+    writer.println(unaryOperator.getOpString() + " (" +
+      unaryOperator.getType() + ") ");
+    indentation += increment;
+    visitNode(unaryOperator.getExp());
+    indentation -= increment;
+    return null;
+  }
+
   /** Dump a binary operator. */
   @Override public Object visit(final BinaryOperator binaryOperator)
   {
@@ -154,6 +166,24 @@ public final class Dump extends TreeVisitorBase<Object>
     indent();
     writer.println("NumericLiteral (" + numericLiteral.getType() + ") " +
        numericLiteral.getValue());
+    return null;
+  }
+
+  /** Dump a boolean literal. */
+  @Override public Object visit(final BooleanLiteral booleanLiteral)
+  {
+    indent();
+    writer.println("BooleanLiteral (" + booleanLiteral.getType() + ") " +
+       booleanLiteral.getValue());
+    return null;
+  }
+
+  /** Dump a null literal. */
+  @Override public Object visit(final NullLiteral nullLiteral)
+  {
+    indent();
+    writer.println("NullLiteral (" + nullLiteral.getType() + ") " +
+       nullLiteral.getValue());
     return null;
   }
 
