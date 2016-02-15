@@ -42,6 +42,38 @@ public abstract class TSValue
   // binary operators (sections 11.5-11.11)
   //
 
+  /** Perform a less than. "this" is the left operand and the right
+   *  operand is given by the parameter.
+   *
+   * @param right value to be compared
+   * @return the result of the comparison
+   */
+  public final TSBoolean lessthan(final TSValue right)
+  {
+    TSValue result = comparison(this, right, true);
+    if (result instanceof TSUndefined) {
+      return TSBoolean.create(false);
+    } else {
+      return (TSBoolean) result;
+    }
+  }
+
+  /** Perform a greater than. "this" is the left operand and the right
+   *  operand is given by the parameter.
+   *
+   * @param right value to be compared
+   * @return the result of the comparison
+   */
+  public final TSBoolean greaterthan(final TSValue right)
+  {
+    TSValue result = comparison(right, this, false);
+    if (result instanceof TSUndefined) {
+      return TSBoolean.create(false);
+    } else {
+      return (TSBoolean) result;
+    }
+  }
+
   /** Perform a multiply. "this" is the left operand and the right
    *  operand is given by the parameter. Both operands are converted
    *  to Number before the multiply.
@@ -135,5 +167,40 @@ public abstract class TSValue
     return value;
   }
 
+  private static TSValue comparison(TSValue x, TSValue y, boolean leftFirst) {
+    TSPrimitive xvalue, yvalue;
+    if (leftFirst) {
+      xvalue = x.toPrimitive();
+      yvalue = y.toPrimitive();
+    } else {
+      yvalue = y.toPrimitive();
+      xvalue = x.toPrimitive();
+    }
+
+    if (xvalue instanceof TSString && yvalue instanceof TSString) {
+      // perfrom string comparison
+      String xstring = xvalue.toString();
+      String ystring = yvalue.toString();
+      if (xstring.compareTo(ystring) < 0) {
+        return TSBoolean.create(true);
+      } else {
+        return TSBoolean.create(false);
+      }
+    } else {
+      // perform number comparison
+      double xnum = xvalue.toNumber().getInternal();
+      double ynum = yvalue.toNumber().getInternal();
+
+      if (Double.isNaN(xnum) || Double.isNaN(ynum)) {
+         return TSUndefined.value;
+      }
+
+      if (xnum < ynum) {
+        return TSBoolean.create(true);
+      } else {
+        return TSBoolean.create(false);
+      }
+    }
+  }
 }
 

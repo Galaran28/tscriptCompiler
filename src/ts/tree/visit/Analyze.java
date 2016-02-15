@@ -163,6 +163,14 @@ public final class Analyze extends TreeVisitorBase<Tree>
         // always produces a number
         binaryOperator.setType(NumberType.getInstance());
         break;
+      case LESSTHAN:
+        //always produces boolean but it is not optimized
+        binaryOperator.setType(UnknownType.getInstance());
+        break;
+      case GREATERTHAN:
+        //always produces boolean but it is not optimized
+        binaryOperator.setType(UnknownType.getInstance());
+        break;
       default:
         Message.bug("unexpected binary operator");
     }

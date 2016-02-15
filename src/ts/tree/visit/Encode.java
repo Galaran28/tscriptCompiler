@@ -432,6 +432,10 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         code += indent() + "double " + result + " = " + leftResult +
           " / " + rightResult + ";\n";
         return new Encode.ReturnValue(result, code);
+      case LESSTHAN:
+        break;
+      case GREATERTHAN:
+        break;
 
       default:
         Message.bug("unexpected operator: " + opString);
@@ -463,6 +467,12 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         return "sub";
       case MULTIPLY:
         return "multiply";
+      case DIVIDE:
+        return "divide";
+      case GREATERTHAN:
+        return "greaterthan";
+      case LESSTHAN:
+        return "lessthan";
       default:
         Message.bug("unexpected operator: " + opNode.getOpString());
     }

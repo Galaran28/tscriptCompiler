@@ -82,9 +82,9 @@ expression
 
 assignmentExpression
   returns [ Expression lval ]
-  : a=additiveExpression
-    { $lval = $a.lval; }
-  | l=leftHandSideExpression EQUAL r=assignmentExpression
+  : r=relationalExpression
+    { $lval = $r.lval; }
+  | l=leftHandSideExpression EQUAL r=relationalExpression
     { checkAssignmentDestination(loc($start), $l.lval);
       $lval = buildBinaryOperator(loc($start), Binop.ASSIGN,
         $l.lval, $r.lval); }
@@ -94,6 +94,18 @@ leftHandSideExpression
   returns [ Expression lval ]
   : p=primaryExpression
     { $lval = $p.lval; }
+  ;
+
+relationalExpression
+  returns [ Expression lval ]
+  : a=additiveExpression
+    {$lval = $a.lval; }
+  | l=relationalExpression LCARET r=additiveExpression
+    {$lval = buildBinaryOperator(loc($start), Binop.LESSTHAN,
+        $l.lval, $r.lval); }
+  | l=relationalExpression RCARET r=additiveExpression
+    {$lval = buildBinaryOperator(loc($start), Binop.GREATERTHAN,
+        $l.lval, $r.lval); }
   ;
 
 additiveExpression
@@ -194,6 +206,8 @@ NULL_LITERAL : NULL ;
 
 LPAREN : [(];
 RPAREN : [)];
+LCARET : [<];
+RCARET : [>];
 SEMICOLON : [;];
 EQUAL : [=];
 PLUS : [+];
