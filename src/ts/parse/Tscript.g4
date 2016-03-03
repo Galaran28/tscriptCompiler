@@ -48,12 +48,20 @@ statementList
 
 statement
   returns [ Statement lval ]
-  : v=varStatement
+  : b=block
+    { $lval = $b.lval; }
+  | v=varStatement
     { $lval = $v.lval; }
   | e=expressionStatement
     { $lval = $e.lval; }
   | p=printStatement
     { $lval = $p.lval; }
+  ;
+
+block
+  returns [ Statement lval ]
+  : LBRACK sl=statementList RBRACK
+    { $lval = buildBlock(loc($start), $sl.lval); }
   ;
 
 varStatement
@@ -219,6 +227,8 @@ LPAREN : [(];
 RPAREN : [)];
 LCARET : [<];
 RCARET : [>];
+LBRACK : [{];
+RBRACK : [}];
 EXCLAMATIONPOINT : [!];
 SEMICOLON : [;];
 EQUAL : [=];

@@ -85,6 +85,9 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     this(2, 2);
   }
 
+  // code that needs to be inserted at the begining of the main class
+  private ArrayList<String> preCode = new ArrayList<>();
+
   // initial indentation value
   private final int initialIndentation;
 
@@ -152,6 +155,15 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     increaseIndentation();
     ret += indent() + "TSValue undefined = TSUndefined.value;\n";
     return ret;
+  }
+
+  /** Append code to the main prologue
+   *
+   *  @param code code snippet to insert.
+   */
+  public void insertAtStart(String code)
+  {
+    this.preCode.add(code);
   }
 
   /** Generate and return epilogue code for the main method body.
@@ -592,6 +604,29 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     {
       code += value.code;
     }
+
+    // correct indentation on preCode and insert into the prologue
+    String pre = "";
+    for(String s : this.preCode) {
+       pre += indent() + s + "\n";
+    }
+    code = pre + code;
+    return new Encode.ReturnValue(code);
+  }
+
+  /** Generate and return code for a block. */
+  @Override public Encode.ReturnValue visit(final Block block)
+  {
+    String code = indent() + "{\n";
+    increaseIndentation();
+
+    for (Encode.ReturnValue value : visitEach(block.getList()))
+    {
+      code += value.code;
+    }
+
+    decreaseIndentation();
+    code += indent() + "}\n";
     return new Encode.ReturnValue(code);
   }
 
@@ -627,6 +662,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
   /** Generate and return code for a var statement. */
   @Override public Encode.ReturnValue visit(final VarStatement varStatement)
   {
+    String tmp = "";
     // if this var node is redundant, then skip it
     if (varStatement.isRedundant())
     {
@@ -641,13 +677,19 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     Type type = varStatement.getType();
     if (type == null || type.isUnknownType())
     {
-      code += indent() + "TSValue " + varStatement.getTempName() +
+      tmp =  indent() + "TSValue " + varStatement.getTempName() +
         " = TSUndefined.value;\n";
+      code += tmp;
+      // append to proluge since javascript declarations apply outside the block
+      if (varStatement.getFunctionDepth() > 0) { insertAtStart(tmp.trim()); }
     }
     else
     {
       String jType = getJavaType(type);
-      code += indent() + jType + " " + varStatement.getTempName() + ";\n";
+      tmp = indent() + jType + " " + varStatement.getTempName() + ";\n";
+      code += tmp;
+      // append to proluge since javascript declarations apply outside the block
+      if (varStatement.getFunctionDepth() > 0) { insertAtStart(tmp.trim()); }
     }
 
     return new Encode.ReturnValue(code);

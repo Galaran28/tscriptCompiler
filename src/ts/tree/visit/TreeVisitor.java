@@ -24,6 +24,8 @@ public interface TreeVisitor<T>
 
   T visit(Program programStatement);
 
+  T visit(Block blockStatement);
+
   T visit(StringLiteral stringLiteral);
 
   T visit(BooleanLiteral booleanLiteral);

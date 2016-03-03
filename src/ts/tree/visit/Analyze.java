@@ -322,6 +322,15 @@ public final class Analyze extends TreeVisitorBase<Tree>
     return null;
   }
 
+  /** Analyze a block. */
+  @Override public Tree visit(final Block block)
+  {
+    this.functionDepth++;
+    visitEach(block.getList());
+    this.functionDepth--;
+    return null;
+  }
+
   /** Analyze a string literal. */
   @Override public Tree visit(final StringLiteral stringLiteral)
   {

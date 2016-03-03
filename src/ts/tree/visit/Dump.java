@@ -209,6 +209,17 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
+  /** Dump a block. */
+  @Override public Object visit(final Block block)
+  {
+    indent();
+    writer.println("BlockStatement");
+    indentation += increment;
+    visitEach(block.getList());
+    indentation -= increment;
+    return null;
+  }
+
   /** Dump a string literal. */
   @Override public Object visit(final StringLiteral stringLiteral)
   {

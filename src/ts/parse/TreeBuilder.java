@@ -126,6 +126,19 @@ public class TreeBuilder
     return new Program(loc, list);
   }
 
+  /** Build block node of the AST.
+   *
+   *  @param  loc  location in source code (file, line, column).
+   *  @param  list list of statements for the block.
+   *  @return tree node for the root of the block.
+   */
+  public static Statement buildBlock(final Location loc,
+      final List<Statement> list)
+  {
+    Message.log("TreeBuilder: BlockStatment");
+    return new Block(loc, list);
+  }
+
   /** Build a Boolean literal expression.
    *
    *  @param  loc   location in source code (file, line, column).
