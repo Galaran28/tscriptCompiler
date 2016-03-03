@@ -683,12 +683,10 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     // generate code to evaluate conditional tree
     Encode.ReturnValue leftReturnValue = visitNode(whileStatement.getLeft());
     String code = leftReturnValue.code;
-    String leftResult = leftReturnValue.result;
+    String conditional = leftReturnValue.result;
 
-    String conditional = getTemp();
-    code += indent() + "TSBoolean " + conditional + " = " +
-      leftResult + ".toBoolean();\n";
-    code += indent() + "while ( " + conditional + ".getInternal() ) {\n";
+    code += indent() + "while ( " +
+      conditional + ".toBoolean().getInternal() ) {\n";
 
     increaseIndentation();
     // generate code to evaluate statement subtree
@@ -698,7 +696,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     // generate code to update conditional
     leftReturnValue = visitNode(whileStatement.getLeft());
     code += leftReturnValue.code;
-    code += indent() + conditional + " = " + leftReturnValue.result + ".toBoolean();\n";
+    code += indent() + conditional + " = " + leftReturnValue.result + ";\n";
 
     decreaseIndentation();
     code += indent() +"}\n";

@@ -10,10 +10,10 @@
 # this script assumes Node.js is installed as "node" in your path.
 #
 
-cd ../test
+cd ../test/phase2/initial
 
 # test programs with errors
-for prog in illegalAssignment undeclaredLval undeclaredRval
+for prog in 
 do
   ../build/bin/ts $prog.ts >&$prog.err
   cmp -s $prog.err results/$prog.err
@@ -24,10 +24,10 @@ do
 done
 
 # test programs without errors
-for prog in ambig assign bigHex exp first fpLiteral hexLiterals nodef redundant str type
+for prog in p1 p2 p3 p4
 do
   node $prog.ts >&$prog.node
-  ../build/bin/ts $prog.ts >&$prog.out
+  ../../../build/bin/ts $prog.ts >&$prog.out
   cmp -s $prog.out $prog.node
   if [ $? -ne 0 ]
   then echo $prog.ts failed
@@ -35,4 +35,4 @@ do
   rm -f $prog.out $prog.node
 done
 
-cd ../bin
+cd ../../../bin
