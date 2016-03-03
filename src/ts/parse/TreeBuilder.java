@@ -126,7 +126,7 @@ public class TreeBuilder
     return new Program(loc, list);
   }
 
-  /** Build block node of the AST.
+  /** Build block node.
    *
    *  @param  loc  location in source code (file, line, column).
    *  @param  list list of statements for the block.
@@ -139,7 +139,21 @@ public class TreeBuilder
     return new Block(loc, list);
   }
 
-  /** Build an empty node of the AST.
+  /** Build an while node.
+   *
+   *  @param  loc location in source code (file, line, column).
+   *  @param  expression expression representing the loop conditional
+   *  @param  statement statement to execute on conditional
+   *  @return tree node for a while statement.
+   */
+  public static Statement buildWhileStatement(final Location loc,
+      final Expression expression, final Statement statement)
+  {
+    Message.log("TreeBuilder: WhileStatment");
+    return new WhileStatement(loc, expression, statement);
+  }
+
+  /** Build a empty node .
    *
    *  @param  loc  location in source code (file, line, column).
    *  @return tree node for an empty statement.

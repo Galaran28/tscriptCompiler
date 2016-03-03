@@ -331,6 +331,14 @@ public final class Analyze extends TreeVisitorBase<Tree>
     return null;
   }
 
+  /** Analyze a while loop. */
+  @Override public Tree visit(final WhileStatement whileStatement)
+  {
+    whileStatement.setLeft((Expression)visitNode(whileStatement.getLeft()));
+    whileStatement.setRight((Statement)visitNode(whileStatement.getRight()));
+    return null;
+  }
+
   /** Analyze a string literal. */
   @Override public Tree visit(final StringLiteral stringLiteral)
   {

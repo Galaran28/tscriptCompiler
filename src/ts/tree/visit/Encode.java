@@ -638,6 +638,35 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     return new Encode.ReturnValue(code);
   }
 
+  /** Generate and return code for a while statement . */
+  @Override public Encode.ReturnValue visit(final WhileStatement whileStatement)
+  {
+    // generate code to evaluate conditional tree
+    Encode.ReturnValue leftReturnValue = visitNode(whileStatement.getLeft());
+    String code = leftReturnValue.code;
+    String leftResult = leftReturnValue.result;
+
+    String conditional = getTemp();
+    code += indent() + "TSBoolean " + conditional + " = " +
+      leftResult + ".toBoolean();\n";
+    code += indent() + "while ( " + conditional + ".getInternal() ) {\n";
+
+    increaseIndentation();
+    // generate code to evaluate statement subtree
+    Encode.ReturnValue rightReturnValue = visitNode(whileStatement.getRight());
+    code += rightReturnValue.code;
+
+    // generate code to update conditional
+    leftReturnValue = visitNode(whileStatement.getLeft());
+    code += leftReturnValue.code;
+    code += indent() + conditional + " = " + leftReturnValue.result + ".toBoolean();\n";
+
+    decreaseIndentation();
+    code += indent() +"}\n";
+
+    return new Encode.ReturnValue(code);
+  }
+
   /** Generate and return code for a string literal. */
   @Override public Encode.ReturnValue visit(final StringLiteral stringLiteral)
   {

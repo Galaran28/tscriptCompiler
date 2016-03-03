@@ -228,6 +228,18 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
+  /** Dump a while operator. */
+  @Override public Object visit(final WhileStatement whileStatement)
+  {
+    indent();
+    writer.println("WhileStatement");
+    indentation += increment;
+    visitNode(whileStatement.getLeft());
+    visitNode(whileStatement.getRight());
+    indentation -= increment;
+    return null;
+  }
+
   /** Dump a string literal. */
   @Override public Object visit(final StringLiteral stringLiteral)
   {

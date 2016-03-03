@@ -56,6 +56,8 @@ statement
     { $lval = $em.lval; }
   | e=expressionStatement
     { $lval = $e.lval; }
+  | i=iterationStatement
+    { $lval = $i.lval; }
   | p=printStatement
     { $lval = $p.lval; }
   ;
@@ -70,6 +72,12 @@ emptyStatement
   returns [ Statement lval ]
   : SEMICOLON
     { $lval = buildEmptyStatement(loc($start)); }
+  ;
+
+iterationStatement
+  returns [ Statement lval ]
+  : WHILE LPAREN e=expression RPAREN s=statement
+    { $lval = buildWhileStatement(loc($start), $e.lval, $s.lval); }
   ;
 
 varStatement
@@ -251,6 +259,7 @@ VAR : 'var';
 TRUE: 'true';
 FALSE: 'false';
 NULL: 'null';
+WHILE: 'while';
 
 IDENTIFIER : IdentifierCharacters;
 

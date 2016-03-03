@@ -47,7 +47,7 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
-  /** Visit a BinaryOperator node. Override to provide specific behavior. */
+  /** Visit a UnaryOperator node. Override to provide specific behavior. */
   @Override public T visit(final UnaryOperator unaryOperator)
   {
     visitNode(unaryOperator.getExp());
@@ -99,6 +99,14 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
   /** Visit a Empty node. Override to provide specific behavior. */
   @Override public T visit(final EmptyStatement emptyStatement)
   {
+    return null;
+  }
+
+  /** Visit a While node. Override to provide specific behavior. */
+  @Override public T visit(final WhileStatement whileStatement)
+  {
+    visitNode(whileStatement.getLeft());
+    visitNode(whileStatement.getRight());
     return null;
   }
 

@@ -28,6 +28,8 @@ public interface TreeVisitor<T>
 
   T visit(EmptyStatement emptyStatement);
 
+  T visit(WhileStatement whileStatement);
+
   T visit(StringLiteral stringLiteral);
 
   T visit(BooleanLiteral booleanLiteral);
