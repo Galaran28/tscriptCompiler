@@ -30,15 +30,16 @@ public class TscriptParser extends Parser {
 		VAR=19, TRUE=20, FALSE=21, NULL=22, IDENTIFIER=23, WhiteSpace=24;
 	public static final int
 		RULE_program = 0, RULE_statementList = 1, RULE_statement = 2, RULE_block = 3, 
-		RULE_varStatement = 4, RULE_expressionStatement = 5, RULE_printStatement = 6, 
-		RULE_expression = 7, RULE_assignmentExpression = 8, RULE_leftHandSideExpression = 9, 
-		RULE_equalityExpression = 10, RULE_relationalExpression = 11, RULE_additiveExpression = 12, 
-		RULE_multiplicativeExpression = 13, RULE_unaryExpression = 14, RULE_primaryExpression = 15;
+		RULE_emptyStatement = 4, RULE_varStatement = 5, RULE_expressionStatement = 6, 
+		RULE_printStatement = 7, RULE_expression = 8, RULE_assignmentExpression = 9, 
+		RULE_leftHandSideExpression = 10, RULE_equalityExpression = 11, RULE_relationalExpression = 12, 
+		RULE_additiveExpression = 13, RULE_multiplicativeExpression = 14, RULE_unaryExpression = 15, 
+		RULE_primaryExpression = 16;
 	public static final String[] ruleNames = {
-		"program", "statementList", "statement", "block", "varStatement", "expressionStatement", 
-		"printStatement", "expression", "assignmentExpression", "leftHandSideExpression", 
-		"equalityExpression", "relationalExpression", "additiveExpression", "multiplicativeExpression", 
-		"unaryExpression", "primaryExpression"
+		"program", "statementList", "statement", "block", "emptyStatement", "varStatement", 
+		"expressionStatement", "printStatement", "expression", "assignmentExpression", 
+		"leftHandSideExpression", "equalityExpression", "relationalExpression", 
+		"additiveExpression", "multiplicativeExpression", "unaryExpression", "primaryExpression"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -136,9 +137,9 @@ public class TscriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(32);
+			setState(34);
 			((ProgramContext)_localctx).sl = statementList(0);
-			setState(33);
+			setState(35);
 			match(EOF);
 			 semanticValue = buildProgram(loc(_localctx.start), ((ProgramContext)_localctx).sl.lval); 
 			}
@@ -189,7 +190,7 @@ public class TscriptParser extends Parser {
 			 ((StatementListContext)_localctx).lval =  new ArrayList<Statement>(); 
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(45);
+			setState(47);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -202,16 +203,16 @@ public class TscriptParser extends Parser {
 					_localctx.sl = _prevctx;
 					_localctx.sl = _prevctx;
 					pushNewRecursionContext(_localctx, _startState, RULE_statementList);
-					setState(39);
+					setState(41);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(40);
+					setState(42);
 					((StatementListContext)_localctx).s = statement();
 					 ((StatementListContext)_localctx).sl.lval.add(((StatementListContext)_localctx).s.lval);
 					                ((StatementListContext)_localctx).lval =  ((StatementListContext)_localctx).sl.lval; 
 					}
 					} 
 				}
-				setState(47);
+				setState(49);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			}
@@ -232,6 +233,7 @@ public class TscriptParser extends Parser {
 		public Statement lval;
 		public BlockContext b;
 		public VarStatementContext v;
+		public EmptyStatementContext em;
 		public ExpressionStatementContext e;
 		public PrintStatementContext p;
 		public BlockContext block() {
@@ -239,6 +241,9 @@ public class TscriptParser extends Parser {
 		}
 		public VarStatementContext varStatement() {
 			return getRuleContext(VarStatementContext.class,0);
+		}
+		public EmptyStatementContext emptyStatement() {
+			return getRuleContext(EmptyStatementContext.class,0);
 		}
 		public ExpressionStatementContext expressionStatement() {
 			return getRuleContext(ExpressionStatementContext.class,0);
@@ -256,12 +261,12 @@ public class TscriptParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_statement);
 		try {
-			setState(60);
+			setState(65);
 			switch (_input.LA(1)) {
 			case LBRACK:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(48);
+				setState(50);
 				((StatementContext)_localctx).b = block();
 				 ((StatementContext)_localctx).lval =  ((StatementContext)_localctx).b.lval; 
 				}
@@ -269,9 +274,17 @@ public class TscriptParser extends Parser {
 			case VAR:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(51);
+				setState(53);
 				((StatementContext)_localctx).v = varStatement();
 				 ((StatementContext)_localctx).lval =  ((StatementContext)_localctx).v.lval; 
+				}
+				break;
+			case SEMICOLON:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(56);
+				((StatementContext)_localctx).em = emptyStatement();
+				 ((StatementContext)_localctx).lval =  ((StatementContext)_localctx).em.lval; 
 				}
 				break;
 			case NUMERIC_LITERAL:
@@ -282,17 +295,17 @@ public class TscriptParser extends Parser {
 			case EXCLAMATIONPOINT:
 			case MINUS:
 			case IDENTIFIER:
-				enterOuterAlt(_localctx, 3);
+				enterOuterAlt(_localctx, 4);
 				{
-				setState(54);
+				setState(59);
 				((StatementContext)_localctx).e = expressionStatement();
 				 ((StatementContext)_localctx).lval =  ((StatementContext)_localctx).e.lval; 
 				}
 				break;
 			case PRINT:
-				enterOuterAlt(_localctx, 4);
+				enterOuterAlt(_localctx, 5);
 				{
-				setState(57);
+				setState(62);
 				((StatementContext)_localctx).p = printStatement();
 				 ((StatementContext)_localctx).lval =  ((StatementContext)_localctx).p.lval; 
 				}
@@ -332,13 +345,44 @@ public class TscriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(62);
+			setState(67);
 			match(LBRACK);
-			setState(63);
+			setState(68);
 			((BlockContext)_localctx).sl = statementList(0);
-			setState(64);
+			setState(69);
 			match(RBRACK);
 			 ((BlockContext)_localctx).lval =  buildBlock(loc(_localctx.start), ((BlockContext)_localctx).sl.lval); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class EmptyStatementContext extends ParserRuleContext {
+		public Statement lval;
+		public TerminalNode SEMICOLON() { return getToken(TscriptParser.SEMICOLON, 0); }
+		public EmptyStatementContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_emptyStatement; }
+	}
+
+	public final EmptyStatementContext emptyStatement() throws RecognitionException {
+		EmptyStatementContext _localctx = new EmptyStatementContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_emptyStatement);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(72);
+			match(SEMICOLON);
+			 ((EmptyStatementContext)_localctx).lval =  buildEmptyStatement(loc(_localctx.start)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -366,15 +410,15 @@ public class TscriptParser extends Parser {
 
 	public final VarStatementContext varStatement() throws RecognitionException {
 		VarStatementContext _localctx = new VarStatementContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_varStatement);
+		enterRule(_localctx, 10, RULE_varStatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(67);
+			setState(75);
 			match(VAR);
-			setState(68);
+			setState(76);
 			((VarStatementContext)_localctx).IDENTIFIER = match(IDENTIFIER);
-			setState(69);
+			setState(77);
 			match(SEMICOLON);
 			 ((VarStatementContext)_localctx).lval =  buildVarStatement(loc(_localctx.start), (((VarStatementContext)_localctx).IDENTIFIER!=null?((VarStatementContext)_localctx).IDENTIFIER.getText():null)); 
 			}
@@ -405,13 +449,13 @@ public class TscriptParser extends Parser {
 
 	public final ExpressionStatementContext expressionStatement() throws RecognitionException {
 		ExpressionStatementContext _localctx = new ExpressionStatementContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_expressionStatement);
+		enterRule(_localctx, 12, RULE_expressionStatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(72);
+			setState(80);
 			((ExpressionStatementContext)_localctx).e = expression();
-			setState(73);
+			setState(81);
 			match(SEMICOLON);
 			 ((ExpressionStatementContext)_localctx).lval =  buildExpressionStatement(loc(_localctx.start), ((ExpressionStatementContext)_localctx).e.lval); 
 			}
@@ -445,19 +489,19 @@ public class TscriptParser extends Parser {
 
 	public final PrintStatementContext printStatement() throws RecognitionException {
 		PrintStatementContext _localctx = new PrintStatementContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_printStatement);
+		enterRule(_localctx, 14, RULE_printStatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(76);
+			setState(84);
 			match(PRINT);
-			setState(77);
+			setState(85);
 			match(LPAREN);
-			setState(78);
+			setState(86);
 			((PrintStatementContext)_localctx).e = expression();
-			setState(79);
+			setState(87);
 			match(RPAREN);
-			setState(80);
+			setState(88);
 			match(SEMICOLON);
 			 ((PrintStatementContext)_localctx).lval =  buildPrintStatement(loc(_localctx.start), ((PrintStatementContext)_localctx).e.lval); 
 			}
@@ -487,11 +531,11 @@ public class TscriptParser extends Parser {
 
 	public final ExpressionContext expression() throws RecognitionException {
 		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_expression);
+		enterRule(_localctx, 16, RULE_expression);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(83);
+			setState(91);
 			((ExpressionContext)_localctx).a = assignmentExpression();
 			 ((ExpressionContext)_localctx).lval =  ((ExpressionContext)_localctx).a.lval; 
 			}
@@ -526,14 +570,14 @@ public class TscriptParser extends Parser {
 
 	public final AssignmentExpressionContext assignmentExpression() throws RecognitionException {
 		AssignmentExpressionContext _localctx = new AssignmentExpressionContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_assignmentExpression);
+		enterRule(_localctx, 18, RULE_assignmentExpression);
 		try {
-			setState(94);
+			setState(102);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(86);
+				setState(94);
 				((AssignmentExpressionContext)_localctx).r = equalityExpression(0);
 				 ((AssignmentExpressionContext)_localctx).lval =  ((AssignmentExpressionContext)_localctx).r.lval; 
 				}
@@ -541,11 +585,11 @@ public class TscriptParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(89);
+				setState(97);
 				((AssignmentExpressionContext)_localctx).l = leftHandSideExpression();
-				setState(90);
+				setState(98);
 				match(EQUAL);
-				setState(91);
+				setState(99);
 				((AssignmentExpressionContext)_localctx).r = equalityExpression(0);
 				 checkAssignmentDestination(loc(_localctx.start), ((AssignmentExpressionContext)_localctx).l.lval);
 				      ((AssignmentExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.ASSIGN,
@@ -579,11 +623,11 @@ public class TscriptParser extends Parser {
 
 	public final LeftHandSideExpressionContext leftHandSideExpression() throws RecognitionException {
 		LeftHandSideExpressionContext _localctx = new LeftHandSideExpressionContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_leftHandSideExpression);
+		enterRule(_localctx, 20, RULE_leftHandSideExpression);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(96);
+			setState(104);
 			((LeftHandSideExpressionContext)_localctx).p = primaryExpression();
 			 ((LeftHandSideExpressionContext)_localctx).lval =  ((LeftHandSideExpressionContext)_localctx).p.lval; 
 			}
@@ -629,19 +673,19 @@ public class TscriptParser extends Parser {
 		int _parentState = getState();
 		EqualityExpressionContext _localctx = new EqualityExpressionContext(_ctx, _parentState);
 		EqualityExpressionContext _prevctx = _localctx;
-		int _startState = 20;
-		enterRecursionRule(_localctx, 20, RULE_equalityExpression, _p);
+		int _startState = 22;
+		enterRecursionRule(_localctx, 22, RULE_equalityExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(100);
+			setState(108);
 			((EqualityExpressionContext)_localctx).a = relationalExpression(0);
 			((EqualityExpressionContext)_localctx).lval =  ((EqualityExpressionContext)_localctx).a.lval; 
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(111);
+			setState(119);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -654,20 +698,20 @@ public class TscriptParser extends Parser {
 					_localctx.l = _prevctx;
 					_localctx.l = _prevctx;
 					pushNewRecursionContext(_localctx, _startState, RULE_equalityExpression);
-					setState(103);
+					setState(111);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(104);
+					setState(112);
 					match(EQUAL);
-					setState(105);
+					setState(113);
 					match(EQUAL);
-					setState(106);
+					setState(114);
 					((EqualityExpressionContext)_localctx).r = relationalExpression(0);
 					((EqualityExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.EQUALS,
 					                  ((EqualityExpressionContext)_localctx).l.lval, ((EqualityExpressionContext)_localctx).r.lval); 
 					}
 					} 
 				}
-				setState(113);
+				setState(121);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			}
@@ -712,19 +756,19 @@ public class TscriptParser extends Parser {
 		int _parentState = getState();
 		RelationalExpressionContext _localctx = new RelationalExpressionContext(_ctx, _parentState);
 		RelationalExpressionContext _prevctx = _localctx;
-		int _startState = 22;
-		enterRecursionRule(_localctx, 22, RULE_relationalExpression, _p);
+		int _startState = 24;
+		enterRecursionRule(_localctx, 24, RULE_relationalExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(115);
+			setState(123);
 			((RelationalExpressionContext)_localctx).a = additiveExpression(0);
 			((RelationalExpressionContext)_localctx).lval =  ((RelationalExpressionContext)_localctx).a.lval; 
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(130);
+			setState(138);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -732,7 +776,7 @@ public class TscriptParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(128);
+					setState(136);
 					switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 					case 1:
 						{
@@ -740,11 +784,11 @@ public class TscriptParser extends Parser {
 						_localctx.l = _prevctx;
 						_localctx.l = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_relationalExpression);
-						setState(118);
+						setState(126);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(119);
+						setState(127);
 						match(LCARET);
-						setState(120);
+						setState(128);
 						((RelationalExpressionContext)_localctx).r = additiveExpression(0);
 						((RelationalExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.LESSTHAN,
 						                  ((RelationalExpressionContext)_localctx).l.lval, ((RelationalExpressionContext)_localctx).r.lval); 
@@ -756,11 +800,11 @@ public class TscriptParser extends Parser {
 						_localctx.l = _prevctx;
 						_localctx.l = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_relationalExpression);
-						setState(123);
+						setState(131);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(124);
+						setState(132);
 						match(RCARET);
-						setState(125);
+						setState(133);
 						((RelationalExpressionContext)_localctx).r = additiveExpression(0);
 						((RelationalExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.GREATERTHAN,
 						                  ((RelationalExpressionContext)_localctx).l.lval, ((RelationalExpressionContext)_localctx).r.lval); 
@@ -769,7 +813,7 @@ public class TscriptParser extends Parser {
 					}
 					} 
 				}
-				setState(132);
+				setState(140);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
 			}
@@ -814,19 +858,19 @@ public class TscriptParser extends Parser {
 		int _parentState = getState();
 		AdditiveExpressionContext _localctx = new AdditiveExpressionContext(_ctx, _parentState);
 		AdditiveExpressionContext _prevctx = _localctx;
-		int _startState = 24;
-		enterRecursionRule(_localctx, 24, RULE_additiveExpression, _p);
+		int _startState = 26;
+		enterRecursionRule(_localctx, 26, RULE_additiveExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(134);
+			setState(142);
 			((AdditiveExpressionContext)_localctx).m = multiplicativeExpression(0);
 			 ((AdditiveExpressionContext)_localctx).lval =  ((AdditiveExpressionContext)_localctx).m.lval; 
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(149);
+			setState(157);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -834,7 +878,7 @@ public class TscriptParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(147);
+					setState(155);
 					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 					case 1:
 						{
@@ -842,11 +886,11 @@ public class TscriptParser extends Parser {
 						_localctx.l = _prevctx;
 						_localctx.l = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_additiveExpression);
-						setState(137);
+						setState(145);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(138);
+						setState(146);
 						match(PLUS);
-						setState(139);
+						setState(147);
 						((AdditiveExpressionContext)_localctx).r = multiplicativeExpression(0);
 						 ((AdditiveExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.ADD,
 						                  ((AdditiveExpressionContext)_localctx).l.lval, ((AdditiveExpressionContext)_localctx).r.lval); 
@@ -858,11 +902,11 @@ public class TscriptParser extends Parser {
 						_localctx.l = _prevctx;
 						_localctx.l = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_additiveExpression);
-						setState(142);
+						setState(150);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(143);
+						setState(151);
 						match(MINUS);
-						setState(144);
+						setState(152);
 						((AdditiveExpressionContext)_localctx).r = multiplicativeExpression(0);
 						 ((AdditiveExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.SUB,
 						                  ((AdditiveExpressionContext)_localctx).l.lval, ((AdditiveExpressionContext)_localctx).r.lval); 
@@ -871,7 +915,7 @@ public class TscriptParser extends Parser {
 					}
 					} 
 				}
-				setState(151);
+				setState(159);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			}
@@ -916,19 +960,19 @@ public class TscriptParser extends Parser {
 		int _parentState = getState();
 		MultiplicativeExpressionContext _localctx = new MultiplicativeExpressionContext(_ctx, _parentState);
 		MultiplicativeExpressionContext _prevctx = _localctx;
-		int _startState = 26;
-		enterRecursionRule(_localctx, 26, RULE_multiplicativeExpression, _p);
+		int _startState = 28;
+		enterRecursionRule(_localctx, 28, RULE_multiplicativeExpression, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(153);
+			setState(161);
 			((MultiplicativeExpressionContext)_localctx).p = unaryExpression();
 			 ((MultiplicativeExpressionContext)_localctx).lval =  ((MultiplicativeExpressionContext)_localctx).p.lval; 
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(168);
+			setState(176);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,9,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -936,7 +980,7 @@ public class TscriptParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(166);
+					setState(174);
 					switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 					case 1:
 						{
@@ -944,11 +988,11 @@ public class TscriptParser extends Parser {
 						_localctx.l = _prevctx;
 						_localctx.l = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_multiplicativeExpression);
-						setState(156);
+						setState(164);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(157);
+						setState(165);
 						match(ASTERISK);
-						setState(158);
+						setState(166);
 						((MultiplicativeExpressionContext)_localctx).r = unaryExpression();
 						 ((MultiplicativeExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.MULTIPLY,
 						                  ((MultiplicativeExpressionContext)_localctx).l.lval, ((MultiplicativeExpressionContext)_localctx).r.lval); 
@@ -960,11 +1004,11 @@ public class TscriptParser extends Parser {
 						_localctx.l = _prevctx;
 						_localctx.l = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_multiplicativeExpression);
-						setState(161);
+						setState(169);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(162);
+						setState(170);
 						match(RSLASH);
-						setState(163);
+						setState(171);
 						((MultiplicativeExpressionContext)_localctx).r = unaryExpression();
 						 ((MultiplicativeExpressionContext)_localctx).lval =  buildBinaryOperator(loc(_localctx.start), Binop.DIVIDE,
 						                  ((MultiplicativeExpressionContext)_localctx).l.lval, ((MultiplicativeExpressionContext)_localctx).r.lval); 
@@ -973,7 +1017,7 @@ public class TscriptParser extends Parser {
 					}
 					} 
 				}
-				setState(170);
+				setState(178);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,9,_ctx);
 			}
@@ -1010,9 +1054,9 @@ public class TscriptParser extends Parser {
 
 	public final UnaryExpressionContext unaryExpression() throws RecognitionException {
 		UnaryExpressionContext _localctx = new UnaryExpressionContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_unaryExpression);
+		enterRule(_localctx, 30, RULE_unaryExpression);
 		try {
-			setState(182);
+			setState(190);
 			switch (_input.LA(1)) {
 			case NUMERIC_LITERAL:
 			case STRING_LITERAL:
@@ -1022,7 +1066,7 @@ public class TscriptParser extends Parser {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(171);
+				setState(179);
 				((UnaryExpressionContext)_localctx).p = primaryExpression();
 				 ((UnaryExpressionContext)_localctx).lval =  ((UnaryExpressionContext)_localctx).p.lval; 
 				}
@@ -1030,9 +1074,9 @@ public class TscriptParser extends Parser {
 			case MINUS:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(174);
+				setState(182);
 				match(MINUS);
-				setState(175);
+				setState(183);
 				((UnaryExpressionContext)_localctx).e = unaryExpression();
 				 ((UnaryExpressionContext)_localctx).lval =  buildUnaryOperator(loc(_localctx.start), Unop.SUB, ((UnaryExpressionContext)_localctx).e.lval); 
 				}
@@ -1040,9 +1084,9 @@ public class TscriptParser extends Parser {
 			case EXCLAMATIONPOINT:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(178);
+				setState(186);
 				match(EXCLAMATIONPOINT);
-				setState(179);
+				setState(187);
 				((UnaryExpressionContext)_localctx).e = unaryExpression();
 				 ((UnaryExpressionContext)_localctx).lval =  buildUnaryOperator(loc(_localctx.start), Unop.LNOT, ((UnaryExpressionContext)_localctx).e.lval); 
 				}
@@ -1088,14 +1132,14 @@ public class TscriptParser extends Parser {
 
 	public final PrimaryExpressionContext primaryExpression() throws RecognitionException {
 		PrimaryExpressionContext _localctx = new PrimaryExpressionContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_primaryExpression);
+		enterRule(_localctx, 32, RULE_primaryExpression);
 		try {
-			setState(199);
+			setState(207);
 			switch (_input.LA(1)) {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(184);
+				setState(192);
 				((PrimaryExpressionContext)_localctx).IDENTIFIER = match(IDENTIFIER);
 				 ((PrimaryExpressionContext)_localctx).lval =  buildIdentifier(loc(_localctx.start), (((PrimaryExpressionContext)_localctx).IDENTIFIER!=null?((PrimaryExpressionContext)_localctx).IDENTIFIER.getText():null)); 
 				}
@@ -1103,7 +1147,7 @@ public class TscriptParser extends Parser {
 			case NUMERIC_LITERAL:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(186);
+				setState(194);
 				((PrimaryExpressionContext)_localctx).NUMERIC_LITERAL = match(NUMERIC_LITERAL);
 				 ((PrimaryExpressionContext)_localctx).lval =  buildNumericLiteral(loc(_localctx.start), (((PrimaryExpressionContext)_localctx).NUMERIC_LITERAL!=null?((PrimaryExpressionContext)_localctx).NUMERIC_LITERAL.getText():null)); 
 				}
@@ -1111,7 +1155,7 @@ public class TscriptParser extends Parser {
 			case STRING_LITERAL:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(188);
+				setState(196);
 				((PrimaryExpressionContext)_localctx).STRING_LITERAL = match(STRING_LITERAL);
 				 ((PrimaryExpressionContext)_localctx).lval =  buildStringLiteral(loc(_localctx.start), (((PrimaryExpressionContext)_localctx).STRING_LITERAL!=null?((PrimaryExpressionContext)_localctx).STRING_LITERAL.getText():null)); 
 				}
@@ -1119,7 +1163,7 @@ public class TscriptParser extends Parser {
 			case BOOLEAN_LITERAL:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(190);
+				setState(198);
 				((PrimaryExpressionContext)_localctx).BOOLEAN_LITERAL = match(BOOLEAN_LITERAL);
 				 ((PrimaryExpressionContext)_localctx).lval =  buildBooleanLiteral(loc(_localctx.start), (((PrimaryExpressionContext)_localctx).BOOLEAN_LITERAL!=null?((PrimaryExpressionContext)_localctx).BOOLEAN_LITERAL.getText():null)); 
 				}
@@ -1127,7 +1171,7 @@ public class TscriptParser extends Parser {
 			case NULL_LITERAL:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(192);
+				setState(200);
 				((PrimaryExpressionContext)_localctx).NULL_LITERAL = match(NULL_LITERAL);
 				 ((PrimaryExpressionContext)_localctx).lval =  buildNullLiteral(loc(_localctx.start), (((PrimaryExpressionContext)_localctx).NULL_LITERAL!=null?((PrimaryExpressionContext)_localctx).NULL_LITERAL.getText():null)); 
 				}
@@ -1135,11 +1179,11 @@ public class TscriptParser extends Parser {
 			case LPAREN:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(194);
+				setState(202);
 				match(LPAREN);
-				setState(195);
+				setState(203);
 				((PrimaryExpressionContext)_localctx).e = expression();
-				setState(196);
+				setState(204);
 				match(RPAREN);
 				 ((PrimaryExpressionContext)_localctx).lval =  ((PrimaryExpressionContext)_localctx).e.lval; 
 				}
@@ -1163,13 +1207,13 @@ public class TscriptParser extends Parser {
 		switch (ruleIndex) {
 		case 1:
 			return statementList_sempred((StatementListContext)_localctx, predIndex);
-		case 10:
-			return equalityExpression_sempred((EqualityExpressionContext)_localctx, predIndex);
 		case 11:
-			return relationalExpression_sempred((RelationalExpressionContext)_localctx, predIndex);
+			return equalityExpression_sempred((EqualityExpressionContext)_localctx, predIndex);
 		case 12:
-			return additiveExpression_sempred((AdditiveExpressionContext)_localctx, predIndex);
+			return relationalExpression_sempred((RelationalExpressionContext)_localctx, predIndex);
 		case 13:
+			return additiveExpression_sempred((AdditiveExpressionContext)_localctx, predIndex);
+		case 14:
 			return multiplicativeExpression_sempred((MultiplicativeExpressionContext)_localctx, predIndex);
 		}
 		return true;
@@ -1217,67 +1261,70 @@ public class TscriptParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\32\u00cc\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\32\u00d4\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
-		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\3\2\3\2"+
-		"\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3.\n\3\f\3\16\3\61\13\3\3\4\3\4"+
-		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4?\n\4\3\5\3\5\3\5\3\5\3\5"+
-		"\3\6\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3"+
-		"\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5\na\n\n\3\13\3\13\3\13\3\f\3\f"+
-		"\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\7\fp\n\f\f\f\16\fs\13\f\3\r\3\r\3\r\3"+
-		"\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\7\r\u0083\n\r\f\r\16\r\u0086"+
-		"\13\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
-		"\3\16\7\16\u0096\n\16\f\16\16\16\u0099\13\16\3\17\3\17\3\17\3\17\3\17"+
-		"\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\7\17\u00a9\n\17\f\17\16"+
-		"\17\u00ac\13\17\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20"+
-		"\5\20\u00b9\n\20\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
-		"\3\21\3\21\3\21\3\21\5\21\u00ca\n\21\3\21\2\7\4\26\30\32\34\22\2\4\6\b"+
-		"\n\f\16\20\22\24\26\30\32\34\36 \2\2\u00ce\2\"\3\2\2\2\4&\3\2\2\2\6>\3"+
-		"\2\2\2\b@\3\2\2\2\nE\3\2\2\2\fJ\3\2\2\2\16N\3\2\2\2\20U\3\2\2\2\22`\3"+
-		"\2\2\2\24b\3\2\2\2\26e\3\2\2\2\30t\3\2\2\2\32\u0087\3\2\2\2\34\u009a\3"+
-		"\2\2\2\36\u00b8\3\2\2\2 \u00c9\3\2\2\2\"#\5\4\3\2#$\7\2\2\3$%\b\2\1\2"+
-		"%\3\3\2\2\2&\'\b\3\1\2\'(\b\3\1\2(/\3\2\2\2)*\f\3\2\2*+\5\6\4\2+,\b\3"+
-		"\1\2,.\3\2\2\2-)\3\2\2\2.\61\3\2\2\2/-\3\2\2\2/\60\3\2\2\2\60\5\3\2\2"+
-		"\2\61/\3\2\2\2\62\63\5\b\5\2\63\64\b\4\1\2\64?\3\2\2\2\65\66\5\n\6\2\66"+
-		"\67\b\4\1\2\67?\3\2\2\289\5\f\7\29:\b\4\1\2:?\3\2\2\2;<\5\16\b\2<=\b\4"+
-		"\1\2=?\3\2\2\2>\62\3\2\2\2>\65\3\2\2\2>8\3\2\2\2>;\3\2\2\2?\7\3\2\2\2"+
-		"@A\7\13\2\2AB\5\4\3\2BC\7\f\2\2CD\b\5\1\2D\t\3\2\2\2EF\7\25\2\2FG\7\31"+
-		"\2\2GH\7\16\2\2HI\b\6\1\2I\13\3\2\2\2JK\5\20\t\2KL\7\16\2\2LM\b\7\1\2"+
-		"M\r\3\2\2\2NO\7\24\2\2OP\7\7\2\2PQ\5\20\t\2QR\7\b\2\2RS\7\16\2\2ST\b\b"+
-		"\1\2T\17\3\2\2\2UV\5\22\n\2VW\b\t\1\2W\21\3\2\2\2XY\5\26\f\2YZ\b\n\1\2"+
-		"Za\3\2\2\2[\\\5\24\13\2\\]\7\17\2\2]^\5\26\f\2^_\b\n\1\2_a\3\2\2\2`X\3"+
-		"\2\2\2`[\3\2\2\2a\23\3\2\2\2bc\5 \21\2cd\b\13\1\2d\25\3\2\2\2ef\b\f\1"+
-		"\2fg\5\30\r\2gh\b\f\1\2hq\3\2\2\2ij\f\3\2\2jk\7\17\2\2kl\7\17\2\2lm\5"+
-		"\30\r\2mn\b\f\1\2np\3\2\2\2oi\3\2\2\2ps\3\2\2\2qo\3\2\2\2qr\3\2\2\2r\27"+
-		"\3\2\2\2sq\3\2\2\2tu\b\r\1\2uv\5\32\16\2vw\b\r\1\2w\u0084\3\2\2\2xy\f"+
-		"\4\2\2yz\7\t\2\2z{\5\32\16\2{|\b\r\1\2|\u0083\3\2\2\2}~\f\3\2\2~\177\7"+
-		"\n\2\2\177\u0080\5\32\16\2\u0080\u0081\b\r\1\2\u0081\u0083\3\2\2\2\u0082"+
-		"x\3\2\2\2\u0082}\3\2\2\2\u0083\u0086\3\2\2\2\u0084\u0082\3\2\2\2\u0084"+
-		"\u0085\3\2\2\2\u0085\31\3\2\2\2\u0086\u0084\3\2\2\2\u0087\u0088\b\16\1"+
-		"\2\u0088\u0089\5\34\17\2\u0089\u008a\b\16\1\2\u008a\u0097\3\2\2\2\u008b"+
-		"\u008c\f\4\2\2\u008c\u008d\7\20\2\2\u008d\u008e\5\34\17\2\u008e\u008f"+
-		"\b\16\1\2\u008f\u0096\3\2\2\2\u0090\u0091\f\3\2\2\u0091\u0092\7\21\2\2"+
-		"\u0092\u0093\5\34\17\2\u0093\u0094\b\16\1\2\u0094\u0096\3\2\2\2\u0095"+
-		"\u008b\3\2\2\2\u0095\u0090\3\2\2\2\u0096\u0099\3\2\2\2\u0097\u0095\3\2"+
-		"\2\2\u0097\u0098\3\2\2\2\u0098\33\3\2\2\2\u0099\u0097\3\2\2\2\u009a\u009b"+
-		"\b\17\1\2\u009b\u009c\5\36\20\2\u009c\u009d\b\17\1\2\u009d\u00aa\3\2\2"+
-		"\2\u009e\u009f\f\4\2\2\u009f\u00a0\7\22\2\2\u00a0\u00a1\5\36\20\2\u00a1"+
-		"\u00a2\b\17\1\2\u00a2\u00a9\3\2\2\2\u00a3\u00a4\f\3\2\2\u00a4\u00a5\7"+
-		"\23\2\2\u00a5\u00a6\5\36\20\2\u00a6\u00a7\b\17\1\2\u00a7\u00a9\3\2\2\2"+
-		"\u00a8\u009e\3\2\2\2\u00a8\u00a3\3\2\2\2\u00a9\u00ac\3\2\2\2\u00aa\u00a8"+
-		"\3\2\2\2\u00aa\u00ab\3\2\2\2\u00ab\35\3\2\2\2\u00ac\u00aa\3\2\2\2\u00ad"+
-		"\u00ae\5 \21\2\u00ae\u00af\b\20\1\2\u00af\u00b9\3\2\2\2\u00b0\u00b1\7"+
-		"\21\2\2\u00b1\u00b2\5\36\20\2\u00b2\u00b3\b\20\1\2\u00b3\u00b9\3\2\2\2"+
-		"\u00b4\u00b5\7\r\2\2\u00b5\u00b6\5\36\20\2\u00b6\u00b7\b\20\1\2\u00b7"+
-		"\u00b9\3\2\2\2\u00b8\u00ad\3\2\2\2\u00b8\u00b0\3\2\2\2\u00b8\u00b4\3\2"+
-		"\2\2\u00b9\37\3\2\2\2\u00ba\u00bb\7\31\2\2\u00bb\u00ca\b\21\1\2\u00bc"+
-		"\u00bd\7\3\2\2\u00bd\u00ca\b\21\1\2\u00be\u00bf\7\4\2\2\u00bf\u00ca\b"+
-		"\21\1\2\u00c0\u00c1\7\5\2\2\u00c1\u00ca\b\21\1\2\u00c2\u00c3\7\6\2\2\u00c3"+
-		"\u00ca\b\21\1\2\u00c4\u00c5\7\7\2\2\u00c5\u00c6\5\20\t\2\u00c6\u00c7\7"+
-		"\b\2\2\u00c7\u00c8\b\21\1\2\u00c8\u00ca\3\2\2\2\u00c9\u00ba\3\2\2\2\u00c9"+
-		"\u00bc\3\2\2\2\u00c9\u00be\3\2\2\2\u00c9\u00c0\3\2\2\2\u00c9\u00c2\3\2"+
-		"\2\2\u00c9\u00c4\3\2\2\2\u00ca!\3\2\2\2\16/>`q\u0082\u0084\u0095\u0097"+
-		"\u00a8\u00aa\u00b8\u00c9";
+		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3\60\n\3\f\3\16\3\63\13"+
+		"\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4D\n"+
+		"\4\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b"+
+		"\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\n\3\n\3\n\3\13\3\13\3\13\3\13\3\13\3\13"+
+		"\3\13\3\13\5\13i\n\13\3\f\3\f\3\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r"+
+		"\3\r\7\rx\n\r\f\r\16\r{\13\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3"+
+		"\16\3\16\3\16\3\16\3\16\3\16\7\16\u008b\n\16\f\16\16\16\u008e\13\16\3"+
+		"\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\7"+
+		"\17\u009e\n\17\f\17\16\17\u00a1\13\17\3\20\3\20\3\20\3\20\3\20\3\20\3"+
+		"\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\7\20\u00b1\n\20\f\20\16\20\u00b4"+
+		"\13\20\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\5\21\u00c1"+
+		"\n\21\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22"+
+		"\3\22\3\22\5\22\u00d2\n\22\3\22\2\7\4\30\32\34\36\23\2\4\6\b\n\f\16\20"+
+		"\22\24\26\30\32\34\36 \"\2\2\u00d6\2$\3\2\2\2\4(\3\2\2\2\6C\3\2\2\2\b"+
+		"E\3\2\2\2\nJ\3\2\2\2\fM\3\2\2\2\16R\3\2\2\2\20V\3\2\2\2\22]\3\2\2\2\24"+
+		"h\3\2\2\2\26j\3\2\2\2\30m\3\2\2\2\32|\3\2\2\2\34\u008f\3\2\2\2\36\u00a2"+
+		"\3\2\2\2 \u00c0\3\2\2\2\"\u00d1\3\2\2\2$%\5\4\3\2%&\7\2\2\3&\'\b\2\1\2"+
+		"\'\3\3\2\2\2()\b\3\1\2)*\b\3\1\2*\61\3\2\2\2+,\f\3\2\2,-\5\6\4\2-.\b\3"+
+		"\1\2.\60\3\2\2\2/+\3\2\2\2\60\63\3\2\2\2\61/\3\2\2\2\61\62\3\2\2\2\62"+
+		"\5\3\2\2\2\63\61\3\2\2\2\64\65\5\b\5\2\65\66\b\4\1\2\66D\3\2\2\2\678\5"+
+		"\f\7\289\b\4\1\29D\3\2\2\2:;\5\n\6\2;<\b\4\1\2<D\3\2\2\2=>\5\16\b\2>?"+
+		"\b\4\1\2?D\3\2\2\2@A\5\20\t\2AB\b\4\1\2BD\3\2\2\2C\64\3\2\2\2C\67\3\2"+
+		"\2\2C:\3\2\2\2C=\3\2\2\2C@\3\2\2\2D\7\3\2\2\2EF\7\13\2\2FG\5\4\3\2GH\7"+
+		"\f\2\2HI\b\5\1\2I\t\3\2\2\2JK\7\16\2\2KL\b\6\1\2L\13\3\2\2\2MN\7\25\2"+
+		"\2NO\7\31\2\2OP\7\16\2\2PQ\b\7\1\2Q\r\3\2\2\2RS\5\22\n\2ST\7\16\2\2TU"+
+		"\b\b\1\2U\17\3\2\2\2VW\7\24\2\2WX\7\7\2\2XY\5\22\n\2YZ\7\b\2\2Z[\7\16"+
+		"\2\2[\\\b\t\1\2\\\21\3\2\2\2]^\5\24\13\2^_\b\n\1\2_\23\3\2\2\2`a\5\30"+
+		"\r\2ab\b\13\1\2bi\3\2\2\2cd\5\26\f\2de\7\17\2\2ef\5\30\r\2fg\b\13\1\2"+
+		"gi\3\2\2\2h`\3\2\2\2hc\3\2\2\2i\25\3\2\2\2jk\5\"\22\2kl\b\f\1\2l\27\3"+
+		"\2\2\2mn\b\r\1\2no\5\32\16\2op\b\r\1\2py\3\2\2\2qr\f\3\2\2rs\7\17\2\2"+
+		"st\7\17\2\2tu\5\32\16\2uv\b\r\1\2vx\3\2\2\2wq\3\2\2\2x{\3\2\2\2yw\3\2"+
+		"\2\2yz\3\2\2\2z\31\3\2\2\2{y\3\2\2\2|}\b\16\1\2}~\5\34\17\2~\177\b\16"+
+		"\1\2\177\u008c\3\2\2\2\u0080\u0081\f\4\2\2\u0081\u0082\7\t\2\2\u0082\u0083"+
+		"\5\34\17\2\u0083\u0084\b\16\1\2\u0084\u008b\3\2\2\2\u0085\u0086\f\3\2"+
+		"\2\u0086\u0087\7\n\2\2\u0087\u0088\5\34\17\2\u0088\u0089\b\16\1\2\u0089"+
+		"\u008b\3\2\2\2\u008a\u0080\3\2\2\2\u008a\u0085\3\2\2\2\u008b\u008e\3\2"+
+		"\2\2\u008c\u008a\3\2\2\2\u008c\u008d\3\2\2\2\u008d\33\3\2\2\2\u008e\u008c"+
+		"\3\2\2\2\u008f\u0090\b\17\1\2\u0090\u0091\5\36\20\2\u0091\u0092\b\17\1"+
+		"\2\u0092\u009f\3\2\2\2\u0093\u0094\f\4\2\2\u0094\u0095\7\20\2\2\u0095"+
+		"\u0096\5\36\20\2\u0096\u0097\b\17\1\2\u0097\u009e\3\2\2\2\u0098\u0099"+
+		"\f\3\2\2\u0099\u009a\7\21\2\2\u009a\u009b\5\36\20\2\u009b\u009c\b\17\1"+
+		"\2\u009c\u009e\3\2\2\2\u009d\u0093\3\2\2\2\u009d\u0098\3\2\2\2\u009e\u00a1"+
+		"\3\2\2\2\u009f\u009d\3\2\2\2\u009f\u00a0\3\2\2\2\u00a0\35\3\2\2\2\u00a1"+
+		"\u009f\3\2\2\2\u00a2\u00a3\b\20\1\2\u00a3\u00a4\5 \21\2\u00a4\u00a5\b"+
+		"\20\1\2\u00a5\u00b2\3\2\2\2\u00a6\u00a7\f\4\2\2\u00a7\u00a8\7\22\2\2\u00a8"+
+		"\u00a9\5 \21\2\u00a9\u00aa\b\20\1\2\u00aa\u00b1\3\2\2\2\u00ab\u00ac\f"+
+		"\3\2\2\u00ac\u00ad\7\23\2\2\u00ad\u00ae\5 \21\2\u00ae\u00af\b\20\1\2\u00af"+
+		"\u00b1\3\2\2\2\u00b0\u00a6\3\2\2\2\u00b0\u00ab\3\2\2\2\u00b1\u00b4\3\2"+
+		"\2\2\u00b2\u00b0\3\2\2\2\u00b2\u00b3\3\2\2\2\u00b3\37\3\2\2\2\u00b4\u00b2"+
+		"\3\2\2\2\u00b5\u00b6\5\"\22\2\u00b6\u00b7\b\21\1\2\u00b7\u00c1\3\2\2\2"+
+		"\u00b8\u00b9\7\21\2\2\u00b9\u00ba\5 \21\2\u00ba\u00bb\b\21\1\2\u00bb\u00c1"+
+		"\3\2\2\2\u00bc\u00bd\7\r\2\2\u00bd\u00be\5 \21\2\u00be\u00bf\b\21\1\2"+
+		"\u00bf\u00c1\3\2\2\2\u00c0\u00b5\3\2\2\2\u00c0\u00b8\3\2\2\2\u00c0\u00bc"+
+		"\3\2\2\2\u00c1!\3\2\2\2\u00c2\u00c3\7\31\2\2\u00c3\u00d2\b\22\1\2\u00c4"+
+		"\u00c5\7\3\2\2\u00c5\u00d2\b\22\1\2\u00c6\u00c7\7\4\2\2\u00c7\u00d2\b"+
+		"\22\1\2\u00c8\u00c9\7\5\2\2\u00c9\u00d2\b\22\1\2\u00ca\u00cb\7\6\2\2\u00cb"+
+		"\u00d2\b\22\1\2\u00cc\u00cd\7\7\2\2\u00cd\u00ce\5\22\n\2\u00ce\u00cf\7"+
+		"\b\2\2\u00cf\u00d0\b\22\1\2\u00d0\u00d2\3\2\2\2\u00d1\u00c2\3\2\2\2\u00d1"+
+		"\u00c4\3\2\2\2\u00d1\u00c6\3\2\2\2\u00d1\u00c8\3\2\2\2\u00d1\u00ca\3\2"+
+		"\2\2\u00d1\u00cc\3\2\2\2\u00d2#\3\2\2\2\16\61Chy\u008a\u008c\u009d\u009f"+
+		"\u00b0\u00b2\u00c0\u00d1";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

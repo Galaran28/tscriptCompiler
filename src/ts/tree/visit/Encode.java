@@ -630,6 +630,14 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     return new Encode.ReturnValue(code);
   }
 
+  /** Generate and return code for an empty statement . */
+  @Override public Encode.ReturnValue visit(final EmptyStatement emptyStatement)
+  {
+    String code = indent() +  ";\n";
+
+    return new Encode.ReturnValue(code);
+  }
+
   /** Generate and return code for a string literal. */
   @Override public Encode.ReturnValue visit(final StringLiteral stringLiteral)
   {

@@ -96,6 +96,12 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
+  /** Visit a Empty node. Override to provide specific behavior. */
+  @Override public T visit(final EmptyStatement emptyStatement)
+  {
+    return null;
+  }
+
   /** Visit a StringLiteral node. Override to provide specific behavior. */
   @Override public T visit(final StringLiteral stringLiteral)
   {

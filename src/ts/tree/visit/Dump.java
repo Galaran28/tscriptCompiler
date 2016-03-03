@@ -220,6 +220,14 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
+  /** Dump a empty statement. */
+  @Override public Object visit(final EmptyStatement emptyStatement)
+  {
+    indent();
+    writer.println("EmptyStatement");
+    return null;
+  }
+
   /** Dump a string literal. */
   @Override public Object visit(final StringLiteral stringLiteral)
   {

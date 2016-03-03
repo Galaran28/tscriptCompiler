@@ -139,6 +139,17 @@ public class TreeBuilder
     return new Block(loc, list);
   }
 
+  /** Build an empty node of the AST.
+   *
+   *  @param  loc  location in source code (file, line, column).
+   *  @return tree node for an empty statement.
+   */
+  public static Statement buildEmptyStatement(final Location loc)
+  {
+    Message.log("TreeBuilder: EmptyStatment");
+    return new EmptyStatement(loc);
+  }
+
   /** Build a Boolean literal expression.
    *
    *  @param  loc   location in source code (file, line, column).

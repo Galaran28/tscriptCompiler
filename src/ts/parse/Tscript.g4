@@ -52,6 +52,8 @@ statement
     { $lval = $b.lval; }
   | v=varStatement
     { $lval = $v.lval; }
+  | em=emptyStatement
+    { $lval = $em.lval; }
   | e=expressionStatement
     { $lval = $e.lval; }
   | p=printStatement
@@ -62,6 +64,12 @@ block
   returns [ Statement lval ]
   : LBRACK sl=statementList RBRACK
     { $lval = buildBlock(loc($start), $sl.lval); }
+  ;
+
+emptyStatement
+  returns [ Statement lval ]
+  : SEMICOLON
+    { $lval = buildEmptyStatement(loc($start)); }
   ;
 
 varStatement
