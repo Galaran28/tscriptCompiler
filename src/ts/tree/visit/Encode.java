@@ -633,7 +633,46 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
   /** Generate and return code for an empty statement . */
   @Override public Encode.ReturnValue visit(final EmptyStatement emptyStatement)
   {
-    String code = indent() +  ";\n";
+    String code = indent() + "Message.setLineNumber(" +
+      emptyStatement.getLineNumber() + ");\n";
+    code = indent() +  ";\n";
+
+    return new Encode.ReturnValue(code);
+  }
+
+  /** Generate and return code for an if statement . */
+  @Override public Encode.ReturnValue visit(final IfStatement ifStatement)
+  {
+    String code = indent() + "Message.setLineNumber(" +
+      ifStatement.getLineNumber() + ");\n";
+
+    // generate code to evaluate conditional tree
+    Encode.ReturnValue expReturnValue = visitNode(ifStatement.getExp());
+    code = expReturnValue.code;
+
+    code += indent() + "if ( " +
+      expReturnValue.result + ".toBoolean().getInternal() ) {\n";
+
+    increaseIndentation();
+
+    // generate code to evaluate true statement subtree
+    Encode.ReturnValue trueReturnValue = visitNode(ifStatement.getTrue());
+    code += trueReturnValue.code;
+
+    decreaseIndentation();
+
+    if (ifStatement.hasElse) {
+      code += indent() + "} else {\n";
+      increaseIndentation();
+
+      // generate code to evaluate false statement subtree
+      Encode.ReturnValue falseReturnValue = visitNode(ifStatement.getFalse());
+      code += falseReturnValue.code;
+
+      decreaseIndentation();
+    }
+
+    code += indent() +"}\n";
 
     return new Encode.ReturnValue(code);
   }

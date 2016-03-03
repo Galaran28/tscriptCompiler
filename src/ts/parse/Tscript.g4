@@ -56,6 +56,8 @@ statement
     { $lval = $em.lval; }
   | e=expressionStatement
     { $lval = $e.lval; }
+  | ifs=ifStatement
+    { $lval = $ifs.lval; }
   | i=iterationStatement
     { $lval = $i.lval; }
   | p=printStatement
@@ -72,6 +74,14 @@ emptyStatement
   returns [ Statement lval ]
   : SEMICOLON
     { $lval = buildEmptyStatement(loc($start)); }
+  ;
+
+ifStatement
+  returns [ Statement lval ]
+  : IF LPAREN e=expression RPAREN s1=statement ELSE  s2=statement
+    { $lval = buildIfStatement(loc($start), $e.lval, $s1.lval, $s2.lval); }
+  | IF LPAREN e=expression RPAREN s=statement
+    { $lval = buildIfStatement(loc($start), $e.lval, $s.lval, $s.lval); }
   ;
 
 iterationStatement
@@ -239,27 +249,29 @@ BOOLEAN_LITERAL : TRUE | FALSE ;
 
 NULL_LITERAL : NULL ;
 
-LPAREN : [(];
-RPAREN : [)];
-LCARET : [<];
-RCARET : [>];
-LBRACK : [{];
-RBRACK : [}];
-EXCLAMATIONPOINT : [!];
-SEMICOLON : [;];
-EQUAL : [=];
-PLUS : [+];
-MINUS : [-];
-ASTERISK : [*];
-RSLASH : [/];
+LPAREN :            [(];
+RPAREN :            [)];
+LCARET :            [<];
+RCARET :            [>];
+LBRACK :            [{];
+RBRACK :            [}];
+EXCLAMATIONPOINT :  [!];
+SEMICOLON :         [;];
+EQUAL :             [=];
+PLUS :              [+];
+MINUS :             [-];
+ASTERISK :          [*];
+RSLASH :            [/];
 
 // keywords start here
 PRINT : 'console.log';
-VAR : 'var';
-TRUE: 'true';
-FALSE: 'false';
-NULL: 'null';
-WHILE: 'while';
+VAR :   'var';
+TRUE:   'true';
+FALSE:  'false';
+NULL:   'null';
+WHILE:  'while';
+IF:     'if';
+ELSE:   'else';
 
 IDENTIFIER : IdentifierCharacters;
 

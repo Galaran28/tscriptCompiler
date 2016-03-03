@@ -228,7 +228,25 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
-  /** Dump a while operator. */
+  /** Dump a if statement. */
+  @Override public Object visit(final IfStatement ifStatement)
+  {
+    indent();
+    writer.println("IfStatement");
+    indentation += increment;
+    visitNode(ifStatement.getExp());
+    visitNode(ifStatement.getTrue());
+
+    if (ifStatement.hasElse) {
+      visitNode(ifStatement.getFalse());
+    }
+
+    indentation -= increment;
+
+    return null;
+  }
+
+  /** Dump a while statement. */
   @Override public Object visit(final WhileStatement whileStatement)
   {
     indent();

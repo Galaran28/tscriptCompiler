@@ -135,21 +135,36 @@ public class TreeBuilder
   public static Statement buildBlock(final Location loc,
       final List<Statement> list)
   {
-    Message.log("TreeBuilder: BlockStatment");
+    Message.log("TreeBuilder: BlockStatement");
     return new Block(loc, list);
   }
 
-  /** Build an while node.
+  /** Build a if node.
    *
    *  @param  loc location in source code (file, line, column).
-   *  @param  expression expression representing the loop conditional
+   *  @param  exp expression representing the conditional
+   *  @param  s1 statement to execute on conditional true
+   *  @param  s2 statement to execute on conditional false
+   *  @return tree node for a if else statement.
+   */
+  public static Statement buildIfStatement(final Location loc,
+      final Expression exp, final Statement s1, final Statement s2)
+  {
+    Message.log("TreeBuilder: IfStatement");
+    return new IfStatement(loc, exp, s1, s2);
+  }
+
+  /** Build a while node.
+   *
+   *  @param  loc location in source code (file, line, column).
+   *  @param  expression expression representing the conditional
    *  @param  statement statement to execute on conditional
    *  @return tree node for a while statement.
    */
   public static Statement buildWhileStatement(final Location loc,
       final Expression expression, final Statement statement)
   {
-    Message.log("TreeBuilder: WhileStatment");
+    Message.log("TreeBuilder: WhileStatement");
     return new WhileStatement(loc, expression, statement);
   }
 
@@ -160,7 +175,7 @@ public class TreeBuilder
    */
   public static Statement buildEmptyStatement(final Location loc)
   {
-    Message.log("TreeBuilder: EmptyStatment");
+    Message.log("TreeBuilder: EmptyStatement");
     return new EmptyStatement(loc);
   }
 

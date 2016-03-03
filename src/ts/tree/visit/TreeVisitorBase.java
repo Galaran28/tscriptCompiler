@@ -102,6 +102,17 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
+  /** Visit a If node. Override to provide specific behavior. */
+  @Override public T visit(final IfStatement ifStatement)
+  {
+    visitNode(ifStatement.getExp());
+    visitNode(ifStatement.getTrue());
+    if (ifStatement.hasElse) {
+      visitNode(ifStatement.getFalse());
+    }
+    return null;
+  }
+
   /** Visit a While node. Override to provide specific behavior. */
   @Override public T visit(final WhileStatement whileStatement)
   {

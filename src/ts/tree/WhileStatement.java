@@ -38,9 +38,9 @@ public class WhileStatement extends Statement
 
   /** Set the left subtree of the node.
    *
-   *  @param left the new left subtree of the node.
+   *  @param exp the new left subtree of the node.
    */
-  public void setLeft(Expression left)
+  public void setLeft(Expression exp)
   {
     this.exp = exp;
   }
@@ -56,9 +56,9 @@ public class WhileStatement extends Statement
 
   /** Set the right subtree of the node.
    *
-   *  @param right the new right subtree of the node.
+   *  @param stat the new right subtree of the node.
    */
-  public void setRight(Statement right)
+  public void setRight(Statement stat)
   {
     this.stat = stat;
   }
