@@ -32,6 +32,8 @@ public interface TreeVisitor<T>
 
   T visit(WhileStatement whileStatement);
 
+  T visit(ControlStatement controlStatement);
+
   T visit(StringLiteral stringLiteral);
 
   T visit(BooleanLiteral booleanLiteral);

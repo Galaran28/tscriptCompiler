@@ -24,7 +24,7 @@ do
 done
 
 # test programs without errors
-for prog in p1 p2 p3 p4
+for prog in p1 p2 p3 p4 p5a p5b
 do
   node $prog.ts >&$prog.node
   ../../../build/bin/ts $prog.ts >&$prog.out

@@ -273,7 +273,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
 
   // support routine for handling unary operators
   private static String getMethodNameForUnaryOperator(
-    final UnaryOperator opNode)
+      final UnaryOperator opNode)
   {
     final Unop op = opNode.getOp();
 
@@ -474,7 +474,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
 
   // support routine for handling binary operators
   private static String getMethodNameForBinaryOperator(
-    final BinaryOperator opNode)
+      final BinaryOperator opNode)
   {
     final Binop op = opNode.getOp();
 
@@ -502,7 +502,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
 
   /** Generate and return code for an expression statement. */
   @Override public Encode.ReturnValue visit(final ExpressionStatement
-    expressionStatement)
+      expressionStatement)
   {
     Encode.ReturnValue exp = visitNode(expressionStatement.getExp());
     String code = indent() + "Message.setLineNumber(" +
@@ -608,7 +608,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     // correct indentation on preCode and insert into the prologue
     String pre = "";
     for(String s : this.preCode) {
-       pre += indent() + s + "\n";
+      pre += indent() + s + "\n";
     }
     code = pre + code;
     return new Encode.ReturnValue(code);
@@ -651,28 +651,40 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     code = expReturnValue.code;
 
     code += indent() + "if ( " +
-      expReturnValue.result + ".toBoolean().getInternal() ) {\n";
-
-    increaseIndentation();
+      expReturnValue.result + ".toBoolean().getInternal() )\n";
 
     // generate code to evaluate true statement subtree
-    Encode.ReturnValue trueReturnValue = visitNode(ifStatement.getTrue());
-    code += trueReturnValue.code;
-
-    decreaseIndentation();
-
-    if (ifStatement.hasElse) {
-      code += indent() + "} else {\n";
+    if ((ifStatement.getTrue() instanceof Block)) {
+      Encode.ReturnValue trueReturnValue = visitNode(ifStatement.getTrue());
+      code += trueReturnValue.code;
+    } else {
+      code += indent() +"{\n";
       increaseIndentation();
 
-      // generate code to evaluate false statement subtree
-      Encode.ReturnValue falseReturnValue = visitNode(ifStatement.getFalse());
-      code += falseReturnValue.code;
+      Encode.ReturnValue trueReturnValue = visitNode(ifStatement.getTrue());
+      code += trueReturnValue.code;
 
       decreaseIndentation();
+      code += indent() +"}\n";
     }
 
-    code += indent() +"}\n";
+    // generate code to evaluate false statement subtree
+    if (ifStatement.hasElse) {
+      code += indent() + "else\n";
+      if ((ifStatement.getFalse() instanceof Block)) {
+        Encode.ReturnValue falseReturnValue = visitNode(ifStatement.getFalse());
+        code += falseReturnValue.code;
+      } else {
+      code += indent() +"{\n";
+        increaseIndentation();
+
+        Encode.ReturnValue falseReturnValue = visitNode(ifStatement.getFalse());
+        code += falseReturnValue.code;
+
+        decreaseIndentation();
+        code += indent() +"}\n";
+      }
+    }
 
     return new Encode.ReturnValue(code);
   }
@@ -681,25 +693,46 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
   @Override public Encode.ReturnValue visit(final WhileStatement whileStatement)
   {
     // generate code to evaluate conditional tree
-    Encode.ReturnValue leftReturnValue = visitNode(whileStatement.getLeft());
-    String code = leftReturnValue.code;
-    String conditional = leftReturnValue.result;
+    Encode.ReturnValue conditional = visitNode(whileStatement.getLeft());
+    String code = conditional.code;
+    String conditionalResult = conditional.result;
 
     code += indent() + "while ( " +
-      conditional + ".toBoolean().getInternal() ) {\n";
+      conditionalResult + ".toBoolean().getInternal() )\n";
 
-    increaseIndentation();
-    // generate code to evaluate statement subtree
-    Encode.ReturnValue rightReturnValue = visitNode(whileStatement.getRight());
-    code += rightReturnValue.code;
+    if (whileStatement.getRight() instanceof Block) {
+      // generate code to evaluate statement subtree
+      Encode.ReturnValue loop = visitNode(whileStatement.getRight());
 
-    // generate code to update conditional
-    leftReturnValue = visitNode(whileStatement.getLeft());
-    code += leftReturnValue.code;
-    code += indent() + conditional + " = " + leftReturnValue.result + ";\n";
+      // delete "}\n"
+     code += loop.code.substring(0, loop.code.length() - 2); // delete "}\n"
+
+      increaseIndentation();
+    } else {
+      // create a new block
+      code += indent() +"{\n";
+
+      increaseIndentation();
+
+      // generate code to evaluate statement subtree
+      code += visitNode(whileStatement.getRight()).code;
+    }
+
+    // generate code to update conditionalResult
+    conditional = visitNode(whileStatement.getLeft());
+    code += conditional.code;
+    code += indent() + conditionalResult + " = " + conditional.result + ";\n";
 
     decreaseIndentation();
     code += indent() +"}\n";
+
+    return new Encode.ReturnValue(code);
+  }
+
+  /** Generate and return code for a control statement . */
+  @Override public Encode.ReturnValue visit(final ControlStatement controlStatement)
+  {
+    String code = indent() + ControlStatement.statement + ";\n";
 
     return new Encode.ReturnValue(code);
   }

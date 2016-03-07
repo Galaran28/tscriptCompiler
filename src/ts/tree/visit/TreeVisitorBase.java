@@ -113,6 +113,12 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
+  /** Visit a control node. Override to provide specific behavior. */
+  @Override public T visit(final ControlStatement controlStatement)
+  {
+    return null;
+  }
+
   /** Visit a While node. Override to provide specific behavior. */
   @Override public T visit(final WhileStatement whileStatement)
   {

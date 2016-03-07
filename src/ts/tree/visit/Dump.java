@@ -246,6 +246,14 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
+  /** Dump a control statement. */
+  @Override public Object visit(final ControlStatement controlStatement)
+  {
+    indent();
+    writer.println("ControlStatement " + ControlStatement.statement);
+    return null;
+  }
+
   /** Dump a while statement. */
   @Override public Object visit(final WhileStatement whileStatement)
   {

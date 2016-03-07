@@ -168,6 +168,19 @@ public class TreeBuilder
     return new WhileStatement(loc, expression, statement);
   }
 
+  /** Build a control node.
+   *
+   *  @param  loc location in source code (file, line, column).
+   *  @param  value string of the actuall control statement.
+   *  @return tree node for a continue statement.
+   */
+  public static Statement buildControlStatement(final Location loc,
+      final String value)
+  {
+    Message.log("TreeBuilder: ControlStatement");
+    return new ControlStatement(loc, value);
+  }
+
   /** Build a empty node .
    *
    *  @param  loc  location in source code (file, line, column).

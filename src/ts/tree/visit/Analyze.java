@@ -331,6 +331,36 @@ public final class Analyze extends TreeVisitorBase<Tree>
     return null;
   }
 
+  /** Analyze a if. */
+  @Override public Tree visit(final IfStatement ifStatement)
+  {
+    initUndefined();
+    visitNode(ifStatement.getExp());
+    visitNode(ifStatement.getTrue());
+    visitNode(ifStatement.getFalse());
+    return null;
+  }
+
+  /** Analyze a while. */
+  @Override public Tree visit(final WhileStatement whileStatement)
+  {
+    initUndefined();
+    visitNode(whileStatement.getLeft());
+    visitNode(whileStatement.getRight());
+    return null;
+  }
+
+  /** Iterate over symbol table and set any with unset type to unknown type */
+  private void initUndefined() {
+    for (Map.Entry<String, Deque<VarStatement>> symbol : symbolTable.entrySet()) {
+      for(VarStatement var: symbol.getValue()) {
+        if (var.getType() == null) {
+          var.setType(UnknownType.getInstance());
+        }
+      }
+    }
+  }
+
   /** Analyze a string literal. */
   @Override public Tree visit(final StringLiteral stringLiteral)
   {
@@ -397,7 +427,7 @@ public final class Analyze extends TreeVisitorBase<Tree>
     {
       varStatement.setIsRedundant();
     }
-    // else push the current VarStatment onto the stack
+    // else push the current VarStatement onto the stack
     else
     {
       stack.addFirst(varStatement);

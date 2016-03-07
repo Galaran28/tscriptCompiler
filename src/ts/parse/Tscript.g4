@@ -60,6 +60,8 @@ statement
     { $lval = $ifs.lval; }
   | i=iterationStatement
     { $lval = $i.lval; }
+  | c=controlStatement
+    { $lval = $c.lval; }
   | p=printStatement
     { $lval = $p.lval; }
   ;
@@ -88,6 +90,14 @@ iterationStatement
   returns [ Statement lval ]
   : WHILE LPAREN e=expression RPAREN s=statement
     { $lval = buildWhileStatement(loc($start), $e.lval, $s.lval); }
+  ;
+
+controlStatement
+  returns [ Statement lval ]
+  : CONTINUE SEMICOLON
+    { $lval = buildControlStatement(loc($start), $CONTINUE.text); }
+  | BREAK SEMICOLON
+    { $lval = buildControlStatement(loc($start), $BREAK.text); }
   ;
 
 varStatement
@@ -264,14 +274,16 @@ ASTERISK :          [*];
 RSLASH :            [/];
 
 // keywords start here
-PRINT : 'console.log';
-VAR :   'var';
-TRUE:   'true';
-FALSE:  'false';
-NULL:   'null';
-WHILE:  'while';
-IF:     'if';
-ELSE:   'else';
+PRINT :     'console.log';
+VAR :       'var';
+TRUE:       'true';
+FALSE:      'false';
+NULL:       'null';
+WHILE:      'while';
+IF:         'if';
+ELSE:       'else';
+CONTINUE:   'continue';
+BREAK:      'break';
 
 IDENTIFIER : IdentifierCharacters;
 
