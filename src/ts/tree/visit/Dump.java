@@ -266,6 +266,41 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
+  /** Dump a object literal. */
+  @Override public Object visit(final ObjectLiteral object)
+  {
+    indent();
+    writer.println("ObjectLiteral");
+    indentation += increment;
+    visitEach(object.getList());
+    indentation -= increment;
+    return null;
+  }
+
+  /** Dump a prop assignment. */
+  @Override public Object visit(final PropAssignment assign)
+  {
+    indent();
+    writer.println("PropAssignment");
+    indentation += increment;
+    visitNode(assign.getName());
+    visitNode(assign.getValue());
+    indentation -= increment;
+    return null;
+  }
+
+  /** Dump a prop accessor. */
+  @Override public Object visit(final PropAccess access)
+  {
+    indent();
+    writer.println("PropAccess");
+    indentation += increment;
+    visitNode(access.getObject());
+    writer.println("PropName = " + access.getProp());
+    indentation -= increment;
+    return null;
+  }
+
   /** Dump a string literal. */
   @Override public Object visit(final StringLiteral stringLiteral)
   {

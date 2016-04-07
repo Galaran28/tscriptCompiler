@@ -234,6 +234,47 @@ public class TreeBuilder
     return new StringLiteral(loc, v);
   }
 
+  /** Build an object literal expression.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  propertyList list of key value pairs to add to the object.
+   *  @return tree node for an object literal.
+   */
+  public static Expression buildObjectLiteral(final Location loc,
+      final List<Expression> propertyList)
+  {
+    Message.log("TreeBuilder: ObjectLiteral");
+    return new ObjectLiteral(loc, propertyList);
+  }
+
+  /** Build an property assignment expression.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  name  name of the property.
+   *  @param  value value of the property.
+   *  @return tree node for a property assignment.
+   */
+  public static Expression buildPropAssignment(final Location loc,
+      final Expression name, final Expression value)
+  {
+    Message.log("TreeBuilder: PropertyAssigment");
+    return new PropAssignment(loc, name, value);
+  }
+
+  /** Build an property access expression.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  object  object name.
+   *  @param  property name of the property to access
+   *  @return tree node for a property access.
+   */
+  public static Expression buildPropAccess(final Location loc,
+      final Expression object, final String property)
+  {
+    Message.log("TreeBuilder: PropertyAccess");
+    return new PropAccess(loc, object, property);
+  }
+
   /** Build a "var" statement.
    *
    *  @param  loc  location in source code (file, line, column).

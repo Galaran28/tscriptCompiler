@@ -34,6 +34,12 @@ public interface TreeVisitor<T>
 
   T visit(ControlStatement controlStatement);
 
+  T visit(ObjectLiteral object);
+
+  T visit(PropAccess accessor);
+
+  T visit(PropAssignment assignment);
+
   T visit(StringLiteral stringLiteral);
 
   T visit(BooleanLiteral booleanLiteral);

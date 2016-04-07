@@ -19,7 +19,7 @@ public class BinaryOperator extends Expression
    *  @param loc   source code location of operator.
    *  @param op    specific binary operator being constructed.
    *  @param left  the left subtree of the operator.
-   *  @param right the righ subtree of the operator.
+   *  @param right the right subtree of the operator.
    */
   public BinaryOperator(final Location loc, final Binop op,
      final Expression left, final Expression right)

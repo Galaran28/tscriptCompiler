@@ -138,6 +138,8 @@ leftHandSideExpression
   returns [ Expression lval ]
   : p=primaryExpression
     { $lval = $p.lval; }
+  | l=leftHandSideExpression DOT IDENTIFIER
+    { $lval = buildPropAccess(loc($start), $l.lval, $IDENTIFIER.text); }
   ;
 
 equalityExpression
@@ -207,8 +209,43 @@ primaryExpression
     { $lval = buildBooleanLiteral(loc($start), $BOOLEAN_LITERAL.text); }
   | NULL_LITERAL
     { $lval = buildNullLiteral(loc($start), $NULL_LITERAL.text); }
+  | o=objectLiteral
+    { $lval = $o.lval; }
   | LPAREN e=expression RPAREN
     { $lval = $e.lval; }
+  ;
+
+objectLiteral
+  returns [ Expression lval ]
+  : LBRACK pl=propertyList RBRACK
+    { $lval = buildObjectLiteral(loc($start), $pl.lval); }
+  | LBRACK RBRACK
+    { $lval = buildObjectLiteral(loc($start), new ArrayList<Expression>()); }
+  ;
+
+propertyList
+  returns [ List<Expression> lval ]
+  : // empty rule
+    { $lval = new ArrayList<Expression>(); }
+  | pl=propertyList COMMA p=propertyAssignment
+    { $pl.lval.add($p.lval);
+      $lval = $pl.lval; }
+  ;
+
+propertyAssignment
+  returns [ Expression lval ]
+  : p=propertyName COLON a=assignmentExpression
+    { $lval = buildPropAssignment(loc($start), $p.lval, $a.lval); }
+  ;
+
+propertyName
+  returns [ Expression lval ]
+  : IDENTIFIER
+    { $lval = buildIdentifier(loc($start), $IDENTIFIER.text); }
+  | STRING_LITERAL
+    { $lval = buildStringLiteral(loc($start), $STRING_LITERAL.text); }
+  | NUMERIC_LITERAL
+    { $lval = buildNumericLiteral(loc($start), $NUMERIC_LITERAL.text); }
   ;
 
 // fragments to support the lexer rules
@@ -267,6 +304,9 @@ LBRACK :            [{];
 RBRACK :            [}];
 EXCLAMATIONPOINT :  [!];
 SEMICOLON :         [;];
+COLON :             [:];
+COMMA :             [,];
+DOT :               [.];
 EQUAL :             [=];
 PLUS :              [+];
 MINUS :             [-];

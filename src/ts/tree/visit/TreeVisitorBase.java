@@ -127,6 +127,27 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
+  /** Visit a object literal node. Override to provide specific behavior. */
+  @Override public T visit(final ObjectLiteral object)
+  {
+    visitEach(object.getList());
+    return null;
+  }
+
+  /** Visit a property access node. Override to provide specific behavior. */
+  @Override public T visit(final PropAccess prop)
+  {
+    return null;
+  }
+
+  /** Visit a property assignment node. Override to provide specific behavior. */
+  @Override public T visit(final PropAssignment assignment)
+  {
+    visitNode(assignment.getName());
+    visitNode(assignment.getValue());
+    return null;
+  }
+
   /** Visit a StringLiteral node. Override to provide specific behavior. */
   @Override public T visit(final StringLiteral stringLiteral)
   {
