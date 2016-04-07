@@ -134,13 +134,6 @@ assignmentExpression
         $l.lval, $r.lval); }
   ;
 
-leftHandSideExpression
-  returns [ Expression lval ]
-  : p=primaryExpression
-    { $lval = $p.lval; }
-  | l=leftHandSideExpression DOT IDENTIFIER
-    { $lval = buildPropAccess(loc($start), $l.lval, $IDENTIFIER.text); }
-  ;
 
 equalityExpression
   returns [ Expression lval ]
@@ -189,12 +182,22 @@ multiplicativeExpression
 
 unaryExpression
   returns [ Expression lval ]
-  : p=primaryExpression
-    { $lval = $p.lval; }
+  : l=leftHandSideExpression
+    { $lval = $l.lval; }
   | MINUS e=unaryExpression
     { $lval = buildUnaryOperator(loc($start), Unop.SUB, $e.lval); }
   | EXCLAMATIONPOINT e=unaryExpression
     { $lval = buildUnaryOperator(loc($start), Unop.LNOT, $e.lval); }
+  ;
+
+leftHandSideExpression
+  returns [ Expression lval ]
+  : p=primaryExpression
+    { $lval = $p.lval; }
+  | l=leftHandSideExpression LSTAPLE e=expression RSTAPLE
+    { $lval = buildPropAccess(loc($start), $l.lval, $e.lval); }
+  | l=leftHandSideExpression DOT IDENTIFIER
+    { $lval = buildPropAccess(loc($start), $l.lval, $IDENTIFIER.text); }
   ;
 
 primaryExpression
@@ -225,8 +228,10 @@ objectLiteral
 
 propertyList
   returns [ List<Expression> lval ]
-  : // empty rule
-    { $lval = new ArrayList<Expression>(); }
+  : prop=propertyAssignment
+    { List<Expression> list = new ArrayList<Expression>();
+      list.add($prop.lval);
+      $lval = list; }
   | pl=propertyList COMMA p=propertyAssignment
     { $pl.lval.add($p.lval);
       $lval = $pl.lval; }
@@ -302,6 +307,8 @@ LCARET :            [<];
 RCARET :            [>];
 LBRACK :            [{];
 RBRACK :            [}];
+LSTAPLE :           '[';
+RSTAPLE :           ']';
 EXCLAMATIONPOINT :  [!];
 SEMICOLON :         [;];
 COLON :             [:];

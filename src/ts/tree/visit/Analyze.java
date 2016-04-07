@@ -361,6 +361,41 @@ public final class Analyze extends TreeVisitorBase<Tree>
     }
   }
 
+  /** Analyze a object literal. */
+  @Override public Tree visit(final ObjectLiteral object)
+  {
+    visitEach(object.getList());
+
+    // always has unknown type
+    object.setType(UnknownType.getInstance());
+
+    // return the node so that it can be re-assigned by its parent
+    return object;
+  }
+
+  /** Analyze a property assignment. */
+  @Override public Tree visit(final PropAssignment assign)
+  {
+    assign.setName((Expression)visitNode(assign.getName()));
+    assign.setValue((Expression)visitNode(assign.getValue()));
+
+    // always has unknown type
+    assign.setType(UnknownType.getInstance());
+
+    // return the node so that it can be re-assigned by its parent
+    return assign;
+  }
+
+  /** Analyze a property access. */
+  @Override public Tree visit(final PropAccess access)
+  {
+    // always has unknown type
+    access.setType(UnknownType.getInstance());
+
+    // return the node so that it can be re-assigned by its parent
+    return access;
+  }
+
   /** Analyze a string literal. */
   @Override public Tree visit(final StringLiteral stringLiteral)
   {

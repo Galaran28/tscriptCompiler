@@ -45,6 +45,22 @@ public final class PropAssignment extends Expression
     return value;
   }
 
+  /** Set the property name.
+   *  @param name name of the property.
+   */
+  public void setName(Expression name)
+  {
+    this.name = name;
+  }
+
+  /** Set the property value.
+   *  @param value value of the property.
+   */
+  public void setValue(Expression value)
+  {
+    this.value = value;
+  }
+
   /** Apply a visitor to the node.
    *
    *  @param visitor the visitor to apply.
