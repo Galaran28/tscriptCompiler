@@ -197,7 +197,8 @@ leftHandSideExpression
   | l=leftHandSideExpression LSTAPLE e=expression RSTAPLE
     { $lval = buildPropAccess(loc($start), $l.lval, $e.lval); }
   | l=leftHandSideExpression DOT IDENTIFIER
-    { $lval = buildPropAccess(loc($start), $l.lval, $IDENTIFIER.text); }
+    { $lval = buildPropAccess(loc($start), $l.lval, 
+      buildIdentifier(loc($start), $IDENTIFIER.text)); }
   ;
 
 primaryExpression

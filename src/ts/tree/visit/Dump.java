@@ -294,10 +294,12 @@ public final class Dump extends TreeVisitorBase<Object>
   {
     indent();
     writer.println("PropAccess");
+
     indentation += increment;
     visitNode(access.getObject());
-    writer.println("PropName = " + access.getProp());
+    visitNode(access.getProp());
     indentation -= increment;
+
     return null;
   }
 

@@ -1376,7 +1376,8 @@ public class TscriptParser extends Parser {
 						match(DOT);
 						setState(257);
 						((LeftHandSideExpressionContext)_localctx).IDENTIFIER = match(IDENTIFIER);
-						 ((LeftHandSideExpressionContext)_localctx).lval =  buildPropAccess(loc(_localctx.start), ((LeftHandSideExpressionContext)_localctx).l.lval, (((LeftHandSideExpressionContext)_localctx).IDENTIFIER!=null?((LeftHandSideExpressionContext)_localctx).IDENTIFIER.getText():null)); 
+						 ((LeftHandSideExpressionContext)_localctx).lval =  buildPropAccess(loc(_localctx.start), ((LeftHandSideExpressionContext)_localctx).l.lval, 
+						                buildIdentifier(loc(_localctx.start), (((LeftHandSideExpressionContext)_localctx).IDENTIFIER!=null?((LeftHandSideExpressionContext)_localctx).IDENTIFIER.getText():null))); 
 						}
 						break;
 					}

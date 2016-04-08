@@ -11,24 +11,7 @@ import java.util.List;
  */
 public final class PropAccess extends Expression
 {
-  private Expression object, propExpression;
-  public String prop;
-  public boolean isString = false;
-
-  /** Construct prop access.
-   *
-   *  @param loc the source code location of the expression.
-   *  @param object name of the object.
-   *  @param prop name of the property in object.
-   */
-  public PropAccess(final Location loc,
-      final Expression object, final String prop)
-  {
-    super(loc);
-    this.object = object;
-    this.prop = prop;
-    this.isString = true;
-  }
+  private Expression object, prop;
 
   /** Construct prop access.
    *
@@ -41,7 +24,7 @@ public final class PropAccess extends Expression
   {
     super(loc);
     this.object = object;
-    this.propExpression = prop;
+    this.prop = prop;
   }
 
   /** Get the object wich is being accessed.
@@ -59,7 +42,23 @@ public final class PropAccess extends Expression
    */
   public Expression getProp()
   {
-    return propExpression;
+    return prop;
+  }
+
+  /** Set the object wich is being accessed.
+   *  @param object new object subtree
+   */
+  public void setObject(Expression object)
+  {
+    this.object = object;
+  }
+
+  /** Set the prop name.
+   *  @param prop new object subtree
+   */
+  public void setProp(Expression prop)
+  {
+    this.prop = prop;
   }
 
   /** Apply a visitor to the node.

@@ -261,21 +261,7 @@ public class TreeBuilder
     return new PropAssignment(loc, name, value);
   }
 
-  /** Build an property access expression with dot notation.
-   *
-   *  @param  loc   location in source code (file, line, column).
-   *  @param  object  object name.
-   *  @param  property name of the property to access
-   *  @return tree node for a property access.
-   */
-  public static Expression buildPropAccess(final Location loc,
-      final Expression object, final String property)
-  {
-    Message.log("TreeBuilder: PropertyAccess");
-    return new PropAccess(loc, object, property);
-  }
-
-  /** Build an property access expression with bracket notation.
+  /** Build an property access expression.
    *
    *  @param  loc   location in source code (file, line, column).
    *  @param  object  object name.
@@ -315,6 +301,8 @@ public class TreeBuilder
       Identifier id = (Identifier) node;
       id.setIsLval();
       return true;
+    } else if (node instanceof PropAccess) {
+       return true;
     }
     return false;
   }

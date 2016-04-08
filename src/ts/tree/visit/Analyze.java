@@ -389,8 +389,15 @@ public final class Analyze extends TreeVisitorBase<Tree>
   /** Analyze a property access. */
   @Override public Tree visit(final PropAccess access)
   {
+    access.setObject((Expression)visitNode(access.getObject()));
+    access.setProp((Expression)visitNode(access.getProp()));
+
     // always has unknown type
     access.setType(UnknownType.getInstance());
+
+    if (access.getObject() instanceof Identifier) {
+       ((Identifier)access.getObject()).setIsLval();
+    }
 
     // return the node so that it can be re-assigned by its parent
     return access;
