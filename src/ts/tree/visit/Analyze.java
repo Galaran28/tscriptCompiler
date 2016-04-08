@@ -395,9 +395,9 @@ public final class Analyze extends TreeVisitorBase<Tree>
     // always has unknown type
     access.setType(UnknownType.getInstance());
 
-    if (access.getObject() instanceof Identifier) {
-       ((Identifier)access.getObject()).setIsLval();
-    }
+    //if (access.getObject() instanceof Identifier) {
+    //   ((Identifier)access.getObject()).setIsLval();
+    //}
 
     // return the node so that it can be re-assigned by its parent
     return access;

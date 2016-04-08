@@ -711,6 +711,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     } else {
       // create a new block
       code += indent() +"{\n";
+    // set key:value pair in result
 
       increaseIndentation();
 
@@ -735,6 +736,35 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     String code = indent() + ControlStatement.statement + ";\n";
 
     return new Encode.ReturnValue(code);
+  }
+
+  /** Generate and return code for a object literal . */
+  @Override public Encode.ReturnValue visit(final ObjectLiteral object)
+  {
+    String result = getTemp();
+    String code = indent() + "TSObject " + result + " = TSObject.create();\n";
+
+    Encode.ReturnValue nameNode;
+    Encode.ReturnValue value;
+    PropAssignment p;
+    String name;
+    for (Expression e : object.getList()) {
+      p = (PropAssignment) e;
+      if (p.getName() instanceof Identifier) {
+        name = ((Identifier)p.getName()).getName();
+      } else {
+        nameNode = visitNode(p.getName());
+        code += nameNode.code;
+        name = nameNode.result;
+      }
+
+      value = visitNode(p.getValue());
+      code += value.code;
+      code += indent() + result + ".set(\"" + name + "\", "
+        + value.result + ".make());\n";
+    }
+
+    return new Encode.ReturnValue(result, code);
   }
 
   /** Generate and return code for a string literal. */
