@@ -124,6 +124,26 @@ public final class Analyze extends TreeVisitorBase<Tree>
         binaryOperator.setType(NumberType.getInstance());
         break;
       case ASSIGN:
+        // if the left sub tree is a property access we will need
+        // to rewrite the tree to represent the actual goal which is
+        // to get an object and set its property to the right hand subtree
+        if (pass == 1 && binaryOperator.getLeft() instanceof PropAccess) {
+          // get the existing left tree
+          PropAccess left = (PropAccess) binaryOperator.getLeft();
+
+          // convert it into a property assgnment which will go on the right
+          PropAssignment newRight = new PropAssignment(
+              left.getLoc(),
+              left.getProp(),
+              (Expression) binaryOperator.getRight());
+          // get the remainder of the left subtree which will become
+          // the new left subtree
+          Expression newLeft = left.getObject();
+
+          binaryOperator.setLeft(newLeft);
+          binaryOperator.setRight(newRight);
+        }
+
         // type of the result is the type of the right-hand side
         binaryOperator.setType(rightType);
         // if the left-hand side is an identifier, then on pass 1
@@ -401,6 +421,17 @@ public final class Analyze extends TreeVisitorBase<Tree>
 
     // return the node so that it can be re-assigned by its parent
     return access;
+  }
+
+  /** Analyze a new expression. */
+  @Override public Tree visit(final NewExpression newExp) {
+    newExp.setObject((Expression)visitNode(newExp.getObject()));
+
+    // always has Unknown type
+    newExp.setType(UnknownType.getInstance());
+
+    // return the node so that it can be re-assigned by its parent
+    return newExp;
   }
 
   /** Analyze a string literal. */

@@ -2,7 +2,7 @@ package ts.support;
 import java.util.HashMap;
 
 /**
- * The super class for all Tscript primitive values.
+ * Class for all TSObject at runtime
  */
 public class TSObject extends TSValue
 {
@@ -13,16 +13,29 @@ public class TSObject extends TSValue
     this.propertyTable.put("prototype", null);
   }
 
-  public TSObject create() {
+  public static TSObject create() {
     return new TSObject();
+  }
+
+  public static TSObject create(TSValue ths) {
+    TSObject ret = new TSObject();
+    if (ths instanceof TSObject) {
+      ret.set("prototype", ((TSObject)ths).get("prototype"));
+    }
+    return ret;
   }
 
   public void set(String property, TSValue value) {
     this.propertyTable.put(property, value);
   }
 
-  public TSValue  get(String property) {
-    return this.propertyTable.get(property);
+  public TSValue get(String prop) {
+    HashMap<String, TSValue> current = this.propertyTable;
+    if (current.containsKey(prop)) { return current.get(prop); }
+
+    TSObject proto = (TSObject) current.get("prototype");
+    if (proto == null) { return TSUndefined.value; }
+    return proto.get(prop);
   }
 
   public TSNumber toNumber() {

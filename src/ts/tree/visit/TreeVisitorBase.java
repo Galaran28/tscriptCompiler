@@ -148,6 +148,12 @@ public class TreeVisitorBase<T> implements TreeVisitor<T>
     return null;
   }
 
+  /** Visit a new expression node. Override to provide specific behavior. */
+  @Override public T visit(final NewExpression newExp)
+  {
+    return null;
+  }
+
   /** Visit a StringLiteral node. Override to provide specific behavior. */
   @Override public T visit(final StringLiteral stringLiteral)
   {

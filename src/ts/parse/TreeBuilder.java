@@ -275,6 +275,19 @@ public class TreeBuilder
     return new PropAccess(loc, object, property);
   }
 
+  /** Build an new expression.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  object  object name.
+   *  @return tree node for a property access.
+   */
+  public static Expression buildNewExpression(final Location loc,
+      final Expression object)
+  {
+    Message.log("TreeBuilder: NewExpression");
+    return new NewExpression(loc, object);
+  }
+
   /** Build a "var" statement.
    *
    *  @param  loc  location in source code (file, line, column).

@@ -303,6 +303,19 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
+  /** Dump a new expression. */
+  @Override public Object visit(final NewExpression newExp)
+  {
+    indent();
+    writer.println("NewExpression");
+
+    indentation += increment;
+    visitNode(newExp.getObject());
+    indentation -= increment;
+
+    return null;
+  }
+
   /** Dump a string literal. */
   @Override public Object visit(final StringLiteral stringLiteral)
   {

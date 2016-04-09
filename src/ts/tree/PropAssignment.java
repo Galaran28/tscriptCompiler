@@ -13,6 +13,9 @@ public final class PropAssignment extends Expression
 {
   private Expression name, value;
 
+  // record the object that this property should be placed in
+  public String objectRef;
+
   /** Construct an object literal.
    *
    *  @param loc the source code location of the expression.

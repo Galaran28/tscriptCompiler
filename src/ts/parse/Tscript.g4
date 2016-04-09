@@ -197,8 +197,14 @@ leftHandSideExpression
   | l=leftHandSideExpression LSTAPLE e=expression RSTAPLE
     { $lval = buildPropAccess(loc($start), $l.lval, $e.lval); }
   | l=leftHandSideExpression DOT IDENTIFIER
-    { $lval = buildPropAccess(loc($start), $l.lval, 
-      buildIdentifier(loc($start), $IDENTIFIER.text)); }
+    { $lval = buildPropAccess(loc($start), $l.lval,
+      buildStringLiteral(loc($start), "\"" + $IDENTIFIER.text + "\"")); }
+      // In the case of a object.prop format the prop is always a string
+      // so we coerce the Identifier into a StringLiteral
+  | NEW l=leftHandSideExpression
+    { $lval = buildNewExpression(loc($start), $l.lval); }
+  | NEW l=leftHandSideExpression LPAREN RPAREN
+    { $lval = buildNewExpression(loc($start), $l.lval); }
   ;
 
 primaryExpression
@@ -244,14 +250,16 @@ propertyAssignment
     { $lval = buildPropAssignment(loc($start), $p.lval, $a.lval); }
   ;
 
+// since the property name is always effectivly a String we coerce the
+// other nodes types into StringLiterals
 propertyName
   returns [ Expression lval ]
   : IDENTIFIER
-    { $lval = buildIdentifier(loc($start), $IDENTIFIER.text); }
+    { $lval = buildStringLiteral(loc($start), "\"" + $IDENTIFIER.text + "\""); }
   | STRING_LITERAL
     { $lval = buildStringLiteral(loc($start), $STRING_LITERAL.text); }
   | NUMERIC_LITERAL
-    { $lval = buildNumericLiteral(loc($start), $NUMERIC_LITERAL.text); }
+    { $lval = buildNumericLiteral(loc($start), "\"" + $NUMERIC_LITERAL.text + "\""); }
   ;
 
 // fragments to support the lexer rules
@@ -332,6 +340,7 @@ IF:         'if';
 ELSE:       'else';
 CONTINUE:   'continue';
 BREAK:      'break';
+NEW:        'new';
 
 IDENTIFIER : IdentifierCharacters;
 

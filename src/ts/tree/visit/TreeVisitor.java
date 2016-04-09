@@ -40,6 +40,8 @@ public interface TreeVisitor<T>
 
   T visit(PropAssignment assignment);
 
+  T visit(NewExpression newExp);
+
   T visit(StringLiteral stringLiteral);
 
   T visit(BooleanLiteral booleanLiteral);

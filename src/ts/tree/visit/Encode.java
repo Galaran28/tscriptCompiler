@@ -300,6 +300,15 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
 
     // generate code to evaluate right subtree
     Expression right = binaryOperator.getRight();
+    if (right instanceof PropAssignment) {
+      // assignment code needs the object refernce
+      // this also implies that the leftResult is an TSObject
+      String newResult = getTemp();
+      code += indent() + "TSObject " + newResult +
+        " = (TSObject) " + leftResult + ";\n";
+      leftResult = newResult;
+      ((PropAssignment)right).objectRef = leftResult;
+    }
     Encode.ReturnValue rightReturnValue = visitNode(right);
     code += rightReturnValue.code;
     String rightResult = rightReturnValue.result;
@@ -387,21 +396,17 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         return new Encode.ReturnValue(result, code);
 
       case ASSIGN:
-
         // Need to handle assignment of Number or String to a variable
         // of ambiguous type. Need to check type of right child against
         // type of left child.
-        if (left.getType().isUnknownType() &&
-            !right.getType().isUnknownType())
+        if (left.getType().isUnknownType() && !right.getType().isUnknownType())
         {
           // need to generate code to make a TSValue and then assign
           String rightResult2 = getTemp();
           code += indent() + "TSValue " + rightResult2 + " = TSValue.make(" +
             rightResult + ");\n";
           code += indent() + leftResult + " = " + rightResult2 + ";\n";
-        }
-        else
-        {
+        } else {
           // otherwise types match so just do the assignment
           code += indent() + leftResult + " = " + rightResult + ";\n";
         }
@@ -744,25 +749,65 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     String result = getTemp();
     String code = indent() + "TSObject " + result + " = TSObject.create();\n";
 
-    Encode.ReturnValue nameNode;
-    Encode.ReturnValue value;
-    PropAssignment p;
-    String name;
     for (Expression e : object.getList()) {
-      p = (PropAssignment) e;
-      if (p.getName() instanceof Identifier) {
-        name = ((Identifier)p.getName()).getName();
-      } else {
-        nameNode = visitNode(p.getName());
-        code += nameNode.code;
-        name = nameNode.result;
-      }
-
-      value = visitNode(p.getValue());
-      code += value.code;
-      code += indent() + result + ".set(\"" + name + "\", "
-        + value.result + ".make());\n";
+      PropAssignment p = (PropAssignment) e;
+      p.objectRef = result;
+      Encode.ReturnValue pNode = visitNode(p);
+      code += pNode.code;
     }
+
+    return new Encode.ReturnValue(result, code);
+  }
+
+  /** Generate and return code for a property assignment. */
+  @Override public Encode.ReturnValue visit(final PropAssignment p)
+  {
+    Encode.ReturnValue name, value;
+    name = visitNode(p.getName());
+    value = visitNode(p.getValue());
+
+    String code = name.code + value.code;
+
+    code += indent() + p.objectRef + ".set("
+      + "TSValue.make(" + name.result + ").toPrimitive().toStr().getInternal(), "
+      + "TSValue.make(" + value.result + "));\n";
+
+    return new Encode.ReturnValue(code);
+  }
+
+  /** Generate and return code for a property access. */
+  @Override public Encode.ReturnValue visit(final PropAccess access)
+  {
+    // get code for left and right subtrees
+    Encode.ReturnValue object = visitNode(access.getObject());
+    Encode.ReturnValue prop = visitNode(access.getProp());
+
+    String code = object.code;
+
+    // the return will be a TSValue so it needs to be cast to a TSObject
+    String objectResult = getTemp();
+    code += indent() + "TSObject " + objectResult +
+      " = (TSObject)" + object.result + ";\n";
+
+    code += prop.code;
+
+    // the property could be a Java type result so we generallize with .make()
+    String result = getTemp();
+    code += indent() + "TSValue " + result + " = " + objectResult + ".get("
+      + "TSValue.make(" + prop.result + ").toPrimitive().toStr().getInternal()"
+      + ");\n";
+
+    return new Encode.ReturnValue(result, code);
+  }
+
+  /** Generate and return code for a new expression. */
+  @Override public Encode.ReturnValue visit(final NewExpression newExp)
+  {
+    Encode.ReturnValue expression = visitNode(newExp.getObject());
+    String result = getTemp();
+    String code = expression.code;
+    code += indent() + "TSObject " + result + " = TSObject.create(" +
+      expression.result + ");\n";
 
     return new Encode.ReturnValue(result, code);
   }
