@@ -8,9 +8,9 @@ public class TSObject extends TSValue
 {
   private HashMap<String, TSValue> propertyTable;
 
-  private TSObject() {
+  protected TSObject() {
     this.propertyTable = new HashMap<String, TSValue>();
-    this.propertyTable.put("prototype", null);
+    this.set("prototype", null);
   }
 
   public static TSObject create() {
@@ -35,6 +35,7 @@ public class TSObject extends TSValue
 
     TSObject proto = (TSObject) current.get("prototype");
     if (proto == null) { return TSUndefined.value; }
+
     return proto.get(prop);
   }
 

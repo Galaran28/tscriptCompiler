@@ -153,7 +153,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     String ret = "";
     ret += indent() + "{\n";
     increaseIndentation();
-    ret += indent() + "TSValue undefined = TSUndefined.value;\n";
+    ret += indent() + "TSGlobal global = TSGlobal.create();\n";
     return ret;
   }
 
@@ -396,20 +396,11 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         return new Encode.ReturnValue(result, code);
 
       case ASSIGN:
-        // Need to handle assignment of Number or String to a variable
-        // of ambiguous type. Need to check type of right child against
-        // type of left child.
-        if (left.getType().isUnknownType() && !right.getType().isUnknownType())
-        {
-          // need to generate code to make a TSValue and then assign
-          String rightResult2 = getTemp();
-          code += indent() + "TSValue " + rightResult2 + " = TSValue.make(" +
-            rightResult + ");\n";
-          code += indent() + leftResult + " = " + rightResult2 + ";\n";
-        } else {
-          // otherwise types match so just do the assignment
-          code += indent() + leftResult + " = " + rightResult + ";\n";
-        }
+        // need to generate code to make a TSValue and then assign
+        String rightResult2 = getTemp();
+        code += indent() + "TSValue " + rightResult2 + " = TSValue.make(" +
+          rightResult + ");\n";
+        code += indent() + "global.set(\"" + leftResult + "\"," + rightResult2 + ");\n";
 
         // and in either case return the value from the right child
         // which can be a Java type
@@ -530,21 +521,21 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     // the identifier is not declared
     if (varNode == null)
     {
-      // if identifier is an lval then eventually we will need to insert
-      // a property into the global object, but since we are not yet
-      // implementing the global object, we need to treat this case as
-      // an error, same as rval
-      code += indent() + "Message.executionError(\"undefined identifier: " +
-        identifier.getName() + "\");\n";
-
-      // so that the Java code will compile, need to build a dummy result
-      result = getTemp();
-      code += indent() + "TSValue " + result + " = TSUndefined.value;\n";
+      // a lval needs to be inserted into the global object
+      if (identifier.isLval()) {
+        result = identifier.getName();
+        code += indent() + "global.set(\"" + identifier.getName() +
+          "\", global.get(\"undefined\"));\n";
+      } else {
+        result = getTemp();
+        code += indent() + "TSValue " + result +
+          " = global.get(\"" + identifier.getName() + "\");\n";
+      }
     }
     // otherwise identifier is declared
     else
     {
-      String codegenName = varNode.getTempName();
+      String codegenName = identifier.getName();
       Type type = varNode.getType();
 
       // does the identifier denote the address of a variable or its value?
@@ -555,10 +546,16 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
       }
       else
       {
-        // need to deref the variable to get its value
-        String jType = getJavaType(type);
         result = getTemp();
-        code += indent() + jType + " " + result + " = " + codegenName + ";\n";
+        String jType = getJavaType(type);
+        String cast = "";
+        if (type.isNumberType()) {
+          cast = ".toNumber().getInternal()";
+        } else if (type.isStringType()) {
+          cast = ".toStr().getInternal()";
+        }
+        code += indent() + jType + " " + result +
+          " = global.get(\"" + identifier.getName() + "\")" + cast + ";\n";
       }
     }
 
@@ -583,21 +580,8 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     String code = indent() + "Message.setLineNumber(" +
       printStatement.getLineNumber() + ");\n";
     code += exp.code;
-    if (type.isNumberType())
-    {
-      // need to apply Javascript Number -> String conversion
-      code += indent() + "System.out.println(TSNumber.create(" + exp.result +
-        ").toStr().getInternal());\n";
-    }
-    else if (type.isStringType())
-    {
-      code += indent() + "System.out.println(" + exp.result + ");\n";
-    }
-    else
-    {
-      code += indent() + "System.out.println(" + exp.result +
-        ".toPrimitive().toStr().getInternal());\n";
-    }
+    code += indent() + "System.out.println(TSValue.make(" + exp.result +
+      ").toPrimitive().toStr().getInternal());\n";
     return new Encode.ReturnValue(code);
   }
 
@@ -857,22 +841,22 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
     // if this variable was never used, then Type will be null.
     // in that case treat as if the type is unknown
     Type type = varStatement.getType();
-    if (type == null || type.isUnknownType())
-    {
-      tmp =  indent() + "TSValue " + varStatement.getTempName() +
-        " = TSUndefined.value;\n";
+    //if (type == null || type.isUnknownType())
+    //{
+      tmp =  indent() + "global.set(\"" + varStatement.getName() +
+        "\", global.get(\"undefined\"));\n";
       code += tmp;
       // append to proluge since javascript declarations apply outside the block
       if (varStatement.getFunctionDepth() > 0) { insertAtStart(tmp.trim()); }
-    }
-    else
-    {
-      String jType = getJavaType(type);
-      tmp = indent() + jType + " " + varStatement.getTempName() + ";\n";
-      code += tmp;
+    //}
+    //else
+    //{
+      //String jType = getJavaType(type);
+      //tmp = indent() + jType + " " + varStatement.getTempName() + ";\n";
+      //code += tmp;
       // append to proluge since javascript declarations apply outside the block
-      if (varStatement.getFunctionDepth() > 0) { insertAtStart(tmp.trim()); }
-    }
+      //if (varStatement.getFunctionDepth() > 0) { insertAtStart(tmp.trim()); }
+    //}
 
     return new Encode.ReturnValue(code);
   }

@@ -480,10 +480,6 @@ public final class Analyze extends TreeVisitorBase<Tree>
     // record the current function depth
     varStatement.setFunctionDepth(functionDepth);
 
-    // generate a temp name to use at codegen time
-    varStatement.setTempName("var_" + varStatement.getName() + "_" +
-      functionDepth);
-
     // is there a stack for this name already in the symbol table?
     Deque<VarStatement> stack = symbolTable.get(varStatement.getName());
     if (stack == null)
