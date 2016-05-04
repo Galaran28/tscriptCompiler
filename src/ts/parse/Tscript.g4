@@ -192,19 +192,70 @@ unaryExpression
 
 leftHandSideExpression
   returns [ Expression lval ]
-  : p=primaryExpression
-    { $lval = $p.lval; }
-  | l=leftHandSideExpression LSTAPLE e=expression RSTAPLE
+  : n=newExpression
+    { $lval = $n.lval; }
+  | c=callExpression
+    { $lval = $c.lval; }
+  ;
+
+callExpression
+  returns [ Expression lval ]
+  : m=memberExpression a=arguments
+    { $lval = buildFunctionCall(loc($start), $m.lval, $a.lval); }
+  | l=callExpression a=arguments
+    { $lval = buildFunctionCall(loc($start), $l.lval, $a.lval); }
+  | l=callExpression LSTAPLE e=expression RSTAPLE
     { $lval = buildPropAccess(loc($start), $l.lval, $e.lval); }
-  | l=leftHandSideExpression DOT IDENTIFIER
+  | l=callExpression DOT IDENTIFIER
     { $lval = buildPropAccess(loc($start), $l.lval,
       buildStringLiteral(loc($start), "\"" + $IDENTIFIER.text + "\"")); }
       // In the case of a object.prop format the prop is always a string
       // so we coerce the Identifier into a StringLiteral
-  | NEW l=leftHandSideExpression
+  ;
+
+memberExpression
+  returns [ Expression lval ]
+  : p=primaryExpression
+    { $lval = $p.lval; }
+  | l=memberExpression LSTAPLE e=expression RSTAPLE
+    { $lval = buildPropAccess(loc($start), $l.lval, $e.lval); }
+  | l=memberExpression DOT IDENTIFIER
+    { $lval = buildPropAccess(loc($start), $l.lval,
+      buildStringLiteral(loc($start), "\"" + $IDENTIFIER.text + "\"")); }
+      // In the case of a object.prop format the prop is always a string
+      // so we coerce the Identifier into a StringLiteral
+  | NEW l=memberExpression
     { $lval = buildNewExpression(loc($start), $l.lval); }
-  | NEW l=leftHandSideExpression LPAREN RPAREN
+  | NEW l=memberExpression LPAREN RPAREN
     { $lval = buildNewExpression(loc($start), $l.lval); }
+  ;
+
+newExpression
+  returns [ Expression lval ]
+  : m=memberExpression
+    { $lval = $m.lval; }
+  | NEW n=newExpression
+    { $lval = $n.lval; }
+  ;
+
+arguments
+  returns [ List<Expression> lval ]
+  : LPAREN RPAREN
+    { List<Expression> list = new ArrayList<Expression>();
+      $lval = list; }
+  | LPAREN al=argumentList RPAREN
+    { $lval = $al.lval; }
+  ;
+
+argumentList
+  returns [ List<Expression> lval ]
+  : a=assignmentExpression 
+    { List<Expression> list = new ArrayList<Expression>();
+      list.add($a.lval);
+      $lval = list; }
+  | al=argumentList COMMA a=assignmentExpression 
+    { $al.lval.add($a.lval);
+      $lval = $al.lval; }
   ;
 
 primaryExpression

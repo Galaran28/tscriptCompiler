@@ -288,6 +288,20 @@ public class TreeBuilder
     return new NewExpression(loc, object);
   }
 
+  /** Build a function call.
+   *
+   *  @param  loc   location in source code (file, line, column).
+   *  @param  object  object name.
+   *  @param  args  object name.
+   *  @return tree node for a property access.
+   */
+  public static Expression buildFunctionCall(final Location loc,
+      final Expression object, final List<Expression> args)
+  {
+    Message.log("TreeBuilder: FunctionCall");
+    return new FunctionCall(loc, object, args);
+  }
+
   /** Build a "var" statement.
    *
    *  @param  loc  location in source code (file, line, column).

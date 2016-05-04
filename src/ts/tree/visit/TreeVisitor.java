@@ -42,6 +42,8 @@ public interface TreeVisitor<T>
 
   T visit(NewExpression newExp);
 
+  T visit(FunctionCall func);
+
   T visit(StringLiteral stringLiteral);
 
   T visit(BooleanLiteral booleanLiteral);

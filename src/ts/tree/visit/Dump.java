@@ -316,6 +316,20 @@ public final class Dump extends TreeVisitorBase<Object>
     return null;
   }
 
+  /** Dump a function call. */
+  @Override public Object visit(final FunctionCall func)
+  {
+    indent();
+    writer.println("FunctionCall");
+
+    indentation += increment;
+    visitNode(func.getExp());
+    visitEach(func.getArgs());
+    indentation -= increment;
+
+    return null;
+  }
+
   /** Dump a string literal. */
   @Override public Object visit(final StringLiteral stringLiteral)
   {

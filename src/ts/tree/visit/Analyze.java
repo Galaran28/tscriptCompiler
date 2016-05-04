@@ -328,6 +328,18 @@ public final class Analyze extends TreeVisitorBase<Tree>
     return numericLiteral;
   }
 
+  /** Analyze a function call. */
+  @Override public Tree visit(final FunctionCall func)
+  {
+    visitNode(func.getExp());
+    visitEach(func.getArgs());
+
+    func.setType(UnknownType.getInstance());
+
+    // return the node so that it can be re-assigned by its parent
+    return func;
+  }
+
   /** Analyze a print statement. */
   @Override public Tree visit(final PrintStatement printStatement)
   {
