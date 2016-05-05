@@ -16,6 +16,8 @@ var nonterm; // nonterminal symbols
 nonterm = new Array();
 var term; // terminal symbols
 term = new Array();
+var nullset; // set of null deriving symbols
+nullset = new Array();
 
 
 //*******************PARSE INPUT FILE**********************//
@@ -64,21 +66,55 @@ while (index < prod.length) {
 }
 
 
-// print productions
-//console.log(prod.length);
-//index = 0;
-//curIndex = 0;
-//while (index < prod.length) {
-//cur = prod[index];
-//console.log(cur.length);
-//while (curIndex < cur.length) {
-//console.log(cur[curIndex]);
-//curIndex = curIndex + 1;
-//}
-//console.log("\n");
-//index = index + 1;
-//curIndex = 0;
-//}
+//*******************DETERMINE NULLSET**********************//
+var curSymbol;
+var changed;
+changed = true;
+while (changed) {
+  index = 0;
+  curIndex = 1;
+  changed = false;
+  while (index < prod.length) {
+    cur = prod[index];
+
+    // if right hand side is empty than symbol is null deriving
+    if (cur.length == 1) {
+      // check of current symbol is already in the set before adding
+      if (nullset[cur[0]] == undefined) {
+        nullset[cur[0]] = cur[0];
+        changed = true;
+      }
+    }
+
+    while (curIndex < cur.length) {
+      curSymbol = cur[curIndex];
+
+      // if the symbol is a terminal than the rule does not null derive
+      if (term[curSymbol] == undefined) {
+        break;
+      }
+
+      // if a nonterminal does not null derive the rule does not null derive
+      if (nullset[curSymbol] == undefined) {
+        break;
+      }
+
+      // if nothing has endend the loop than the rule null derives
+      if (curIndex + 1 == cur.length) {
+        // check of current symbol is already in the set before adding
+        if (nullset[cur[0]] == undefined) {
+          nullset[cur[0]] = cur[0];
+          changed = true;
+        }
+      }
+
+      curIndex = curIndex + 1;
+    }
+
+    index = index + 1;
+    curIndex = 1;
+  }
+}
 
 
 //*******************DISPLAY RESULTS**********************//
@@ -106,4 +142,14 @@ while (index < k.length) {
   output = output + k[index] + " ";
   index = index + 1;
 }
-console.log(output);
+console.log(output + "\n");
+
+console.log("Null-Deriving Nonterminals\n");
+index = 0;
+output = "";
+k = keys(nullset);
+while (index < k.length) {
+  output = output + k[index] + " ";
+  index = index + 1;
+}
+console.log(output + "\n");
