@@ -401,7 +401,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
         String rightResult2 = getTemp();
         code += indent() + "TSValue " + rightResult2 + " = TSValue.make(" +
           rightResult + ");\n";
-        code += indent() + "global.set(\"" + leftResult + "\"," + rightResult2 + ");\n";
+         code += indent() + "global.set(\"" + leftResult + "\"," + rightResult2 + ");\n";
 
         // and in either case return the value from the right child
         // which can be a Java type
