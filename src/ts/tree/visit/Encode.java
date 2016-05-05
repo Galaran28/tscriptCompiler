@@ -12,6 +12,7 @@ import ts.tree.type.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * Does a traversal of the AST to generate Java code to execute the program
@@ -558,6 +559,43 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue>
           " = global.get(\"" + identifier.getName() + "\")" + cast + ";\n";
       }
     }
+
+    return new Encode.ReturnValue(result, code);
+  }
+
+  /** Encode a function call. */
+  @Override public Encode.ReturnValue visit(final FunctionCall func)
+  {
+    // generate code for the function name expression
+    Encode.ReturnValue exp = visitNode(func.getExp());
+    String code = exp.code;
+
+    // generate code for arguments
+    List<Encode.ReturnValue> args = visitEach(func.getArgs());
+    for (Encode.ReturnValue a : args) { code += a.code; }
+
+    String argTemp = getTemp();
+    code += indent() + "TSValue[] " + argTemp + " = ";
+    if (args.size() == 0) {
+      code += "new TSValue[0];\n";
+    } else {
+      Iterator<Encode.ReturnValue> iter = args.iterator();
+      code += "{\n";
+
+      increaseIndentation();
+      code += indent() + "TSValue.make(" + iter.next().result + ")";
+      while(iter.hasNext()) {
+        code += ",\n" + indent() + "TSValue.make(" + iter.next().result + ")";
+      }
+
+      decreaseIndentation();
+      code += "\n" + indent() + "};\n";
+    }
+
+    // evaluate function
+    String result = getTemp();
+    code += indent() + "TSValue " + result + " = " +
+      exp.result + ".execute(" + argTemp + ");\n";
 
     return new Encode.ReturnValue(result, code);
   }

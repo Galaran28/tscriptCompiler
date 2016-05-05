@@ -26,6 +26,10 @@ public abstract class TSValue
 
   abstract public TSBoolean toBoolean();
 
+  public TSValue execute(TSValue[] args) {
+    return null;
+  }
+
   /** Convert to String. Override for all primitive types.
    *  It can't be called toString because of Object.toString.
    *

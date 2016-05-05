@@ -9,6 +9,7 @@ public class TSObject extends TSValue
   private HashMap<String, TSValue> propertyTable;
 
   protected TSObject() {
+    super();
     this.propertyTable = new HashMap<String, TSValue>();
     this.set("prototype", null);
   }
