@@ -15,6 +15,7 @@ var nonterm; // nonterminal symbols
 var term; // terminal symbols
 var nullset; // set of null deriving symbols
 var first; // set of first sets
+var follow; // set of follow sets
 
 
 //*******************PARSE INPUT FILE**********************//
@@ -194,6 +195,128 @@ while (changed) {
 }
 
 
+//*******************DETERMINE FOLLOW SETS**********************//
+// initilize follow with known nonterminals
+follow = {};
+index = 0;
+k = keys(nonterm);
+while (index < k.length) {
+  follow[k[index]] = {};
+  index = index + 1;
+}
+
+// start set automatically gets EOF
+follow[SS]["EOF"] = "EOF";
+
+// calculate follow sets
+var curSymbol;
+var curFollow;
+var changed;
+changed = true;
+while (changed) {
+  index = 0;
+  curIndex = 1;
+  changed = false;
+  while (index < prod.length) {
+    // get current production rule
+    cur = prod[index];
+
+    // iterate over right hand side symbols
+    while (curIndex < cur.length) {
+      curSymbol = cur[curIndex];
+
+      // get follow set for current symbol
+      curFollow = follow[curSymbol];
+
+      // only care about nonterminal symbols
+      if (!(nonterm[curSymbol] == undefined)) {
+
+        // if last symbol in production, add follow set of the left hand side
+        // to the follow set of the current symbol
+        if (curIndex + 1 == cur.length) {
+
+          // get follow set of the left hand side symbol
+          var tmpFollow;
+          tmpFollow = keys(follow[cur[0]]);
+          var tmpIndex;
+          tmpIndex = 0;
+          var tmpSymbol;
+
+          // add any new symbols to the current follow set
+          while (tmpIndex < tmpFollow.length) {
+            tmpSymbol = tmpFollow[tmpIndex];
+
+            // check of current symbol is already in the set before adding
+            if (curFollow[tmpSymbol] == undefined) {
+              curFollow[tmpSymbol] = tmpSymbol;
+              changed = true;
+            }
+
+            tmpIndex = tmpIndex + 1;
+          }
+
+          break;
+        } else { // add first set of remaining symbols
+
+          var firstIndex;
+          firstIndex = curIndex + 1;
+          // iterate over remaining right hand side symbols
+          while (firstIndex < cur.length) {
+            firstSymbol = cur[firstIndex];
+
+            // if the symbol is a terminal than add to follow set
+            if (!(term[firstSymbol] == undefined)) {
+              // check if current symbol is already in the set before adding
+              if (curFollow[firstSymbol] == undefined) {
+                curFollow[firstSymbol] = firstSymbol;
+                changed = true;
+              }
+              break;
+            }
+
+            // if symbol is nonterminal than add its first set to this follow set
+            if (!(nonterm[firstSymbol] == undefined)) {
+              // get first set of the first symbol
+              var tmpFirst;
+              tmpFirst = keys(first[firstSymbol]);
+              var tmpIndex;
+              tmpIndex = 0;
+              var tmpSymbol;
+
+              // add any new symbols to the current first set
+              while (tmpIndex < tmpFirst.length) {
+                tmpSymbol = tmpFirst[tmpIndex];
+
+                // check of current symbol is already in the set before adding
+                if (curFollow[tmpSymbol] == undefined) {
+                  curFollow[tmpSymbol] = tmpSymbol;
+                  changed = true;
+                }
+
+                tmpIndex = tmpIndex + 1;
+              }
+
+              // if the nonterminal does not null derive than we are done
+              if (nullset[curSymbol] == undefined) {
+                break;
+              }
+            }
+
+            firstIndex = firstIndex + 1;
+          }
+        }
+      }
+
+      curIndex = curIndex + 1;
+    }
+
+    index = index + 1;
+    curIndex = 1;
+  }
+}
+
+
+
 //*******************DISPLAY RESULTS**********************//
 var output;
 var k;
@@ -253,3 +376,26 @@ while (index < k.length) {
   curIndex = 0;
 }
 console.log(output + "\n");
+
+console.log("Follow Sets\n");
+index = 0;
+curIndex = 0;
+output = "";
+k = keys(follow);
+// iterate over  sets
+while (index < k.length) {
+  output = output + k[index] + ":";
+
+  // extract set for current key
+  cur = keys(follow[k[index]]);
+
+  // print set contents
+  while (curIndex < cur.length) {
+    output = output + " " + cur[curIndex];
+    curIndex = curIndex + 1;
+  }
+  output = output + "\n";
+  index = index + 1;
+  curIndex = 0;
+}
+console.log(output);
