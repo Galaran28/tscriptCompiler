@@ -6,7 +6,7 @@ import java.util.HashMap;
  */
 public class TSObject extends TSValue
 {
-  private HashMap<String, TSValue> propertyTable;
+  public HashMap<String, TSValue> propertyTable;
 
   protected TSObject() {
     super();

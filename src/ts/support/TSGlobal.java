@@ -14,6 +14,8 @@ public final class TSGlobal extends TSObject
     this.set("readln", new TSReadLn());
     this.set("isNaN", new TSIsNan());
     this.set("isFinite", new TSIsFinite());
+    this.set("split", new TSSplit());
+    this.set("keys", new TSKeys());
   }
 
   public static TSGlobal create() {
