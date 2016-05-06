@@ -16,6 +16,7 @@ var term; // terminal symbols
 var nullset; // set of null deriving symbols
 var first; // set of first sets
 var follow; // set of follow sets
+var predict; // set of predict sets
 
 
 //*******************PARSE INPUT FILE**********************//
@@ -283,7 +284,7 @@ while (changed) {
               tmpIndex = 0;
               var tmpSymbol;
 
-              // add any new symbols to the current first set
+              // add any new symbols to the current follow set
               while (tmpIndex < tmpFirst.length) {
                 tmpSymbol = tmpFirst[tmpIndex];
 
@@ -313,6 +314,71 @@ while (changed) {
     index = index + 1;
     curIndex = 1;
   }
+}
+
+
+//*******************DETERMINE PREDICT SET**********************//
+predict = {};
+var curSymbol;
+index = 0;
+curIndex = 1;
+while (index < prod.length) {
+  predict[index] = {};
+  curPredict = predict[index];
+  cur = prod[index];
+
+  // if right hand side is empty than predict is the follow set
+  if (cur.length == 1) {
+    // get follow set of the first symbol
+    var tmpFollow;
+    tmpFollow = keys(follow[cur[0]]);
+    var tmpIndex;
+    tmpIndex = 0;
+    var tmpSymbol;
+
+    // add symbols to predict set
+    while (tmpIndex < tmpFollow.length) {
+      tmpSymbol = tmpFollow[tmpIndex];
+      console.log(tmpSymbol);
+      curPredict[tmpSymbol] = tmpSymbol;
+      tmpIndex = tmpIndex + 1;
+    }
+  }
+
+  while (curIndex < cur.length) {
+    curSymbol = cur[curIndex];
+
+    // if the symbol is a terminal than add that to the predict set
+    if (!(term[curSymbol] == undefined)) {
+      curPredict[curSymbol] = curSymbol;
+      break;
+    }
+
+    // if symbol is a nonterminal add first to predict set
+    if (!(nonterm[curSymbol] == undefined)) {
+      // get first set
+      var tmpFirst;
+      tmpFirst = keys(first[curSymbol]);
+      var tmpIndex;
+      tmpIndex = 0;
+      var tmpSymbol;
+
+      // add symbols to the predict
+      while (tmpIndex < tmpFirst.length) {
+        tmpSymbol = tmpFirst[tmpIndex];
+        curPredict[tmpSymbol] = tmpSymbol;
+        tmpIndex = tmpIndex + 1;
+      }
+
+      // if the nonterminal does not null derive than we are done
+      if (nullset[curSymbol] == undefined) {
+        break;
+      }
+    }
+    curIndex = curIndex + 1;
+  }
+  index = index + 1;
+  curIndex = 1;
 }
 
 
@@ -395,6 +461,34 @@ while (index < k.length) {
     curIndex = curIndex + 1;
   }
   output = output + "\n";
+  index = index + 1;
+  curIndex = 0;
+}
+console.log(output);
+
+console.log("Predict Sets\n");
+index = 0;
+curIndex = 0;
+output = "";
+// iterate over productions
+while (index < prod.length) {
+  // print production contents
+  cur = prod[index];
+  while (curIndex < cur.length) {
+    output = output + cur[curIndex] + " ";
+    curIndex = curIndex + 1;
+  }
+  output = output + "\n";
+
+  // print predict contents
+  curIndex = 0;
+  cur = keys(predict[index]);
+  while (curIndex < cur.length) {
+    output = output + cur[curIndex] + " ";
+    curIndex = curIndex + 1;
+  }
+  output = output + "\n\n";
+
   index = index + 1;
   curIndex = 0;
 }
