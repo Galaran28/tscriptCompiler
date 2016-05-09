@@ -20,8 +20,6 @@ public class TSSplit extends TSFunction
       result = str.split(seperator);
     }
 
-    System.out.println("DEBUG: " + Arrays.toString(result));
-
     for (int index = 0; index < result.length; index++) {
       ret.set(String.valueOf(index), TSValue.make(result[index]));
     }

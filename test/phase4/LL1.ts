@@ -17,6 +17,7 @@ var nullset; // set of null deriving symbols
 var first; // set of first sets
 var follow; // set of follow sets
 var predict; // set of predict sets
+var isLL1; // boolean of LL(1) compliance
 
 
 //*******************PARSE INPUT FILE**********************//
@@ -339,7 +340,6 @@ while (index < prod.length) {
     // add symbols to predict set
     while (tmpIndex < tmpFollow.length) {
       tmpSymbol = tmpFollow[tmpIndex];
-      console.log(tmpSymbol);
       curPredict[tmpSymbol] = tmpSymbol;
       tmpIndex = tmpIndex + 1;
     }
@@ -381,6 +381,80 @@ while (index < prod.length) {
   curIndex = 1;
 }
 
+
+//*******************DETERMINE LL(1)**********************//
+//console.log("determine ll1");
+isLL1 = true; // assume true untill conflict is found
+//var curSymbol;
+//var tmpSymbol;
+
+//var prodIndex;
+//var prodSeachIndex;
+//var predictIndex;
+//var predictSearchIndex;
+
+//var curProd;
+//var curProdSearch;
+//var curPredict;
+//var curPredictSearch;
+
+//prodIndex = 0;
+// iterate over productions sets
+//console.log("just before first loop");
+//while (prodIndex < prod.length) {
+//console.log("just inside first loop");
+  //curProd = prod[index];
+
+  // find another production with the same lhs
+  //prodSeachIndex = prodIndex;
+  //console.log("just before second loop");
+  //while (prodSeachIndex < prod.length) {
+  //console.log("at start of second loop");
+    //curProdSearch = prod[prodSeachIndex];
+
+    // if lhs do not match, move to the next set
+    //if (!(curProdSearch[0] == curProd[0])) {
+    //console.log("no match, moving on");
+    //prodSeachIndex = prodSeachIndex + 1;
+    //continue;
+    //}
+
+    // compare predict sets looking for conflicts
+    //predictIndex = 0;
+
+    // get an iterator over the current predict set
+    //curPredict = keys(predict[prodIndex]);
+    // get a set of the other predict set
+    //curPredictSearch = predict[prodSeachIndex];
+
+    //while (predictIndex < curPredict.length) {
+    //curSymbol = curPredict[predictIndex];
+      // if symbol is in another predict set grammer is not LL(1)
+      //if (!(curPredictSearch[curSymbol] == unknown)) {
+      //isLL1 = false;
+      //break;
+      //}
+
+      //predictIndex = predictIndex + 1;
+      //}
+
+    // if conflict has been found we can exit
+    //console.log("at end of loop");
+    //if (isLL1) {
+    //prodSeachIndex = prodSeachIndex + 1;
+    //} else {
+      //break;
+      //prodSeachIndex = prod.length;
+      //}
+      //}
+  // if conflict has been found we can exit
+  //if (isLL1) {
+  //prodIndex = prodIndex + 1;
+  //} else {
+  ////break;
+  //prodIndex = prod.length;
+  //}
+  //}
 
 
 //*******************DISPLAY RESULTS**********************//
@@ -493,3 +567,9 @@ while (index < prod.length) {
   curIndex = 0;
 }
 console.log(output);
+
+if (isLL1) {
+  console.log("The grammer is LL(1).");
+} else {
+  console.log("The grammer is NOT LL(1).");
+}
