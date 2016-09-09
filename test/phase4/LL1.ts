@@ -461,43 +461,40 @@ isLL1 = true; // assume true untill conflict is found
 var output;
 var k;
 
-console.log("Start Symbol\n");
-console.log(SS + "\n");
-
-console.log("Nonterminals\n");
-index = 0;
 output = "";
+output = output + "Start Symbol\n\n";
+output = output + SS + "\n\n";
+
+output = output + "Nonterminals\n\n";
+index = 0;
 k = keys(nonterm);
 while (index < k.length) {
   output = output + k[index] + " ";
   index = index + 1;
 }
-console.log(output + "\n");
+output = output + "\n\n";
 
-console.log("Terminals\n");
+output = output + "Terminals\n\n";
 index = 0;
-output = "";
 k = keys(term);
 while (index < k.length) {
   output = output + k[index] + " ";
   index = index + 1;
 }
-console.log(output + "\n");
+output = output + "\n\n";
 
-console.log("Null-Deriving Nonterminals\n");
+output = output + "Null-Deriving Nonterminals\n\n";
 index = 0;
-output = "";
 k = keys(nullset);
 while (index < k.length) {
   output = output + k[index] + " ";
   index = index + 1;
 }
-console.log(output + "\n");
+output = output + "\n\n";
 
-console.log("First Sets\n");
+output = output + "First Sets\n\n";
 index = 0;
 curIndex = 0;
-output = "";
 k = keys(first);
 // iterate over first sets
 while (index < k.length) {
@@ -515,12 +512,11 @@ while (index < k.length) {
   index = index + 1;
   curIndex = 0;
 }
-console.log(output + "\n");
+output = output + "\n";
 
-console.log("Follow Sets\n");
+output = output + "Follow Sets\n\n";
 index = 0;
 curIndex = 0;
-output = "";
 k = keys(follow);
 // iterate over  sets
 while (index < k.length) {
@@ -538,12 +534,11 @@ while (index < k.length) {
   index = index + 1;
   curIndex = 0;
 }
-console.log(output);
+output = output + "\n";
 
-console.log("Predict Sets\n");
+output = output + "Predict Sets\n\n";
 index = 0;
 curIndex = 0;
-output = "";
 // iterate over productions
 while (index < prod.length) {
   // print production contents
@@ -566,10 +561,12 @@ while (index < prod.length) {
   index = index + 1;
   curIndex = 0;
 }
-console.log(output);
 
 if (isLL1) {
-  console.log("The grammer is LL(1).");
+  output = output + "The grammer is LL(1).";
 } else {
-  console.log("The grammer is NOT LL(1).");
+  output = output + "The grammer is NOT LL(1).";
 }
+output = output + "\n";
+
+console.log(output);
